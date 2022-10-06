@@ -89,6 +89,44 @@ app.get('/', (req, res) => {
   response.redirect(oauth2.getAuthorizationUrl({ scope: 'api refresh_token' }))
 })
 
+app.get('/auth/logout', (req, res) => {
+  const session = getSession(req, res);
+  if (session == null) return;
+
+  // Revoke OAuth token
+  const conn = resumeSalesforceConnection(session);
+  conn.logout((error) => {
+    if (error) {
+      console.error('Salesforce OAuth revoke error: ' + JSON.stringify(error));
+      res.status(500).json(error);
+      return;
+    }
+
+    // Destroy server-side session
+    session.destroy((error) => {
+      if (error) {
+        console.error('Salesforce session destruction error: ' + JSON.stringify(error));
+      }
+    });
+
+    // Redirect to app main page
+    return res.redirect('/');
+  });  
+})
+
+app.get('/auth/token', (req, res) => {
+  const session = getSession(req, res)
+  if (session == null) {
+    return
+  }
+  const conn = resumeSalesforceConnection(session);
+  if(conn) {
+
+    console.log(conn.accessToken)
+    res.send([{token_received: true}])
+  }    
+})
+
 /**
  * Login callback endpoint (only called by Salesforce)
  */

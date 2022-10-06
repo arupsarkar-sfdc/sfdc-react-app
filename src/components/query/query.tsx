@@ -7,17 +7,17 @@ const Query: FC = () => {
     "SELECT Name from Account LIMIT 2"
   );
 
-  const [queryResults, setQueryResults] = useState<string>() 
+  const [queryResults, setQueryResults] = useState<string>();
 
   const handleQuery = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.preventDefault()
-    console.log(e.target.value)
+    e.preventDefault();
+    console.log(e.target.value);
     setQueryParams(e.target.value.trim());
   };
 
   return (
     <div>
-      <h1> Query Page </h1>
+      <h1> Query </h1>
       <article>
         <textarea
           name="queryText"
@@ -27,45 +27,49 @@ const Query: FC = () => {
       </article>
       <div>
         <article>
-
-        <Button
-          border="100px"
-          color="#66bb6a"
-          height="40px"
-          onClick={async () => {
-            console.log("Initiating query call...")
-            fetch(`https://sfdc-react-app.herokuapp.com/api/query?q=${encodeURI(queryParams)}`)
+          <Button
+            border="100px"
+            color="#66bb6a"
+            height="40px"
+            onClick={async () => {
+              console.log("Initiating query call...");
+              fetch(
+                `http://localhost:3000/api/query?q=${encodeURI(
+                  queryParams
+                )}`,
+                {
+                  headers: { "Content-Type": "application/json" },
+                }
+              )
                 .then((res) => {
-                    if(res.ok) {
-                    console.log('Raw response : ', JSON.stringify(res))
-                    return res.json()
-                    }
-                    throw res
+                  if (res.ok) {
+                    console.log("Raw response : ", JSON.stringify(res));
+                    return res.json();
+                  }
+                  throw res;
                 })
                 .then((data) => {
-                    console.log('Data response : ', JSON.stringify(data))
-                    setQueryResults(JSON.stringify(data))
+                  console.log("Data response : ", JSON.stringify(data));
+                  setQueryResults(JSON.stringify(data));
                 })
                 .catch((error) => {
-                    console.error(error)
+                  console.error(error);
                 })
                 .finally(() => {
-                    console.log('Query fetch complete')
-                })
-          }}
-          radius="5%"
-          width="100px"
-          children="Submit"
-        />            
+                  console.log("Query fetch complete");
+                });
+            }}
+            radius="5%"
+            width="100px"
+            children="Submit"
+          />
         </article>
         <div>
-            <article>
-                <p>
-                    {queryResults}
-                </p>
-            </article>
+          <h1>Results</h1>
+          <article>
+            <p>{queryResults}</p>
+          </article>
         </div>
-
       </div>
     </div>
   );
