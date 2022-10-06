@@ -34,7 +34,7 @@ const Query: FC = () => {
           height="40px"
           onClick={async () => {
             console.log("Initiating query call...")
-            fetch(`http://localhost:3000/api/query?q=${encodeURI(queryParams)}`)
+            fetch(`https://sfdc-react-app.herokuapp.com/api/query?q=${encodeURI(queryParams)}`)
                 .then((res) => {
                     if(res.ok) {
                     console.log('Raw response : ', JSON.stringify(res))
