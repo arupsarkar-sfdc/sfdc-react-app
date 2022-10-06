@@ -34,7 +34,7 @@ const Query: FC = () => {
             onClick={async () => {
               console.log("Initiating query call...");
               fetch(
-                `http://localhost:3000/api/query?q=${encodeURI(
+                `/api/query?q=${encodeURI(
                   queryParams
                 )}`,
                 {
