@@ -2,7 +2,6 @@ import React from "react";
 import { FC, useEffect, useState } from "react";
 import "./styles.css";
 
-// import Button from "./components/buttons/CustomButtonComponent";
 import Query from "./components/query/query";
 import Login from "./components/auth/login";
 import Logout from "./components/auth/logout";
@@ -10,6 +9,7 @@ import Logout from "./components/auth/logout";
 
 
 const App: FC = () => {
+
 
 
   return (
@@ -20,7 +20,6 @@ const App: FC = () => {
       <p>1. Click Login - It will OAuth to Salesforce Org</p>
       <p>2. Query - Write a query in the box (please drag and make it big) SELECT NAME FROM ACCOUNT LIMIT 2 </p>
       <p>3. Click Logout - It will destroy the OAuth session</p>
-
       <article>
         <Login/>
       </article>

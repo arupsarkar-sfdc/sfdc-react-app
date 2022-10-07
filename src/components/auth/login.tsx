@@ -11,8 +11,8 @@ interface ICRMData {
 }
 
 interface token_received {
-    token_received?: boolean;
-  }
+  token_received?: boolean;
+}
 
 const defaultCRMData: ICRMData[] = [];
 
@@ -24,52 +24,62 @@ const Login: FC = () => {
 
   const [data, setData] = useState<ICRMData[]>(defaultCRMData);
   const [token, setToken] = useState<string | undefined>(undefined);
-  const [isLoggedIn, setLoggedIn] = useState<token_received | false >(false);
-  const [showLogin, setShowLogin] = useState<boolean>(false)
+  const [isLoggedIn, setLoggedIn] = useState<token_received | false>(false);
+  const [showLogin, setShowLogin] = useState<boolean>(true);
+  const [logged, setLogged] = useState<string | undefined>("NotLoggedIn");
 
-    // useEffect(() => {
-    //     try{
-    //         fetch('http://localhost:3000/auth/token')
-    //             .then((res) =>{
-    //                 if (res.ok) {
-    //                     console.log("Raw response : ", JSON.stringify(res));
-    //                     return res.json()
-    //                   }
-    //                   throw res;
-    //             })
-    //             .then((data: token_received) => {
-    //                 console.log(data.token_received)
-    //                 setLoggedIn(data)
-    //                 if(data.token_received) {
-    //                     setShowLogin(true)
-    //                 }
-                    
-    //             })
-    //             .catch((error) => {
-    //                 console.error('Error fetch data from server ', error)
-    //             })
-    //             .finally(() => {
-    //                 console.log('Fetched data from server')
-    //             })
-    //     }catch(err){
-    //         console.error('Error fetching tokens.')
-    //     }
-    // }, [isLoggedIn])
+  useEffect(() => {
+    const source = new EventSource(`/auth/token`);
+    source.addEventListener(
+      "open",
+      () => {
+        console.log("SSE opened!");
+      },
+      false
+    );
+
+    source.addEventListener(
+      "message",
+      (e: any) => {
+        console.log("SSE payload received ", e.data);
+        if (e.data == "LoggedIn") {
+          console.log("Hide the login button", e.data == "LoggedIn");
+          setLogged(undefined);
+          setShowLogin(false);
+        } else if (e.data == "NotLoggedIn") {
+          console.log("Do not hide the login button", e.data == "NotLoggedIn");
+          setShowLogin(true);
+        }
+      },
+      false
+    );
+    source.addEventListener(
+      "error",
+      (e) => {
+        console.error("Error: ", e);
+      },
+      false
+    );
+    return () => {
+      source.close();
+    };
+  }, [showLogin]);
 
   return (
     <div>
-      <Button
-        border="100px"
-        color="#03a9f4"
-        height="40px"
-        onClick={async () => {
-          console.log("Initiating Server call...");
-          login();
-        }}
-        radius="5%"
-        width="100px"
-        children="Login"
-      />
+          <Button
+            disabled={!showLogin}
+            border="100px"
+            color="#03a9f4"
+            height="40px"
+            onClick={async () => {
+              console.log("Initiating Server call...");
+              login();
+            }}
+            radius="5%"
+            width="100px"
+            children="Login"
+          />
     </div>
   );
 };
