@@ -29,57 +29,64 @@ const Login: FC = () => {
   const [logged, setLogged] = useState<string | undefined>("NotLoggedIn");
 
   useEffect(() => {
-    const source = new EventSource(`/auth/token`);
-    source.addEventListener(
-      "open",
-      () => {
-        console.log("SSE opened!");
-      },
-      false
-    );
+    try {
+      const source = new EventSource(`/auth/token`);
+      source.addEventListener(
+        "open",
+        () => {
+          console.log("SSE opened!");
+        },
+        false
+      );
 
-    source.addEventListener(
-      "message",
-      (e: any) => {
-        console.log("SSE payload received ", e.data);
-        if (e.data == "LoggedIn") {
-          console.log("Hide the login button", e.data == "LoggedIn");
-          setLogged(undefined);
-          setShowLogin(false);
-        } else if (e.data == "NotLoggedIn") {
-          console.log("Do not hide the login button", e.data == "NotLoggedIn");
-          setShowLogin(true);
-        }
-      },
-      false
-    );
-    source.addEventListener(
-      "error",
-      (e) => {
-        console.error("Error: ", e);
-      },
-      false
-    );
-    return () => {
-      source.close();
-    };
-  }, [showLogin]);
+      source.addEventListener(
+        "message",
+        (e: any) => {
+          console.log("SSE payload received ", e.data);
+          if (e.data == "LoggedIn") {
+            console.log("Hide the login button", e.data == "LoggedIn");
+            setLogged(undefined);
+            setShowLogin(false);
+          } else if (e.data == "NotLoggedIn") {
+            console.log(
+              "Do not hide the login button",
+              e.data == "NotLoggedIn"
+            );
+            setShowLogin(true);
+          }
+        },
+        false
+      );
+      source.addEventListener(
+        "error",
+        (e) => {
+          console.error("Error: ", e);
+        },
+        false
+      );
+      return () => {
+        source.close();
+      };
+    } catch (error) {
+      console.error("Error fetching server side events in login event ", error);
+    }
+  }, []);
 
   return (
     <div>
-          <Button
-            disabled={!showLogin}
-            border="100px"
-            color="#03a9f4"
-            height="40px"
-            onClick={async () => {
-              console.log("Initiating Server call...");
-              login();
-            }}
-            radius="5%"
-            width="100px"
-            children="Login"
-          />
+      <Button
+        disabled={!showLogin}
+        border="100px"
+        color="#03a9f4"
+        height="40px"
+        onClick={async () => {
+          console.log("Initiating Server call...");
+          login();
+        }}
+        radius="5%"
+        width="100px"
+        children="Login"
+      />
     </div>
   );
 };

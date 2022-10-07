@@ -66,9 +66,7 @@ const Query: FC = () => {
         </article>
         <div>
           <h1>Results</h1>
-          <article>
-            <p>{queryResults}</p>
-          </article>
+            {queryResults}
         </div>
       </div>
     </div>

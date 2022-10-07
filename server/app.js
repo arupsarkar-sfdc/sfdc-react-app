@@ -66,6 +66,7 @@ function resumeSalesforceConnection(session) {
     instanceUrl: session.sfdcAuth.instanceUrl,
     accessToken: session.sfdcAuth.accessToken,
     version: process.env.apiVersion,
+    refreshToken: session.sfdcAuth.refreshToken,
   });
 }
 
@@ -94,7 +95,7 @@ app.get("/", (req, res) => {
  */
 app.get("/auth/login", (request, response) => {
   // Redirect to Salesforce login/authorization page
-  response.redirect(oauth2.getAuthorizationUrl({ scope: "api refresh_token" }));
+  response.redirect(oauth2.getAuthorizationUrl({ scope: 'api id web refresh_token' }));
 });
 
 app.get("/auth/logout", (req, res) => {
@@ -146,13 +147,14 @@ app.get("/auth/callback", (request, response) => {
       response.status(500).json(error);
       return;
     }
-
     console.log("access token from salesforce: ", conn.accessToken);
     console.log("instance url from salesforce: ", conn.instanceUrl);
+    console.log("refresh token from salesforce: ", conn.refreshToken);
     // Store oauth session data in server (never expose it directly to client)
     request.session.sfdcAuth = {
       instanceUrl: conn.instanceUrl,
       accessToken: conn.accessToken,
+      refreshToken: conn.refreshToken,
     };
     // Redirect to app main page
     return response.redirect("/");

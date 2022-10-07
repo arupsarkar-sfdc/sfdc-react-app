@@ -56,3 +56,13 @@ body {
   border: 0px solid black;
   padding: 10px;
 }
+
+.box {
+  width: 45%;
+  margin: 1%;
+  border: 1px dashed #cdcdcd;
+  display: inline-block;
+  min-height: 400px;
+  text-align: center;
+  overflow-wrap: break-word;  
+}
