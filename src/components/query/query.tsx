@@ -1,3 +1,4 @@
+import { Box, TextField, Typography } from "@mui/material";
 import React, { useState, useEffect, FC, useContext } from "react";
 import "../../styles.css";
 import Button from "../buttons/CustomButtonComponent";
@@ -10,7 +11,6 @@ const Query: FC = () => {
   );
 
   const [queryResults, setQueryResults] = useState<string>();
-  // const queryCtx = useContext(MenuContext);
   const { menu } = useMenuGlobalContext();
 
   const handleQuery = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -23,13 +23,16 @@ const Query: FC = () => {
     <div>
       {menu == "Query" ? (
         <div>
-          <h1> Query </h1>
           <article>
-            <textarea
-              name="queryText"
-              aria-label="Query"
+            <TextField
+              placeholder="SELECT Name from Account LIMIT 2"
+              fullWidth
+              multiline
+              label="query"
+              id="query"
               onChange={handleQuery}
-            ></textarea>
+              margin="normal"
+            ></TextField>
           </article>
           <div>
             <article>
@@ -65,10 +68,13 @@ const Query: FC = () => {
                 children="Submit"
               />
             </article>
-            <div className="card">
+            <Box component="main" sx={{ p: 3 }}>
+              <Typography>{queryResults}</Typography>
+            </Box>
+            {/* <div className="card">
               <h1>Results</h1>
               <div className="cards_item">{queryResults}</div>
-            </div>
+            </div> */}
           </div>
         </div>
       ) : (
