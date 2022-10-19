@@ -1,21 +1,44 @@
-
-import React, {FC} from "react";
-import AppBar from '@mui/material/AppBar';
+import React, { useContext, FC, useState } from "react";
+import AppBar from "@mui/material/AppBar";
 import Typography from "@mui/material/Typography";
 
-const MenuBar: FC = () => {
-    return(
-        <AppBar position="static">
-            <Typography 
-                variant="h6" 
-                component="div" 
-                margin="10px"
-                sx={{ flexGrow: 1 }}
-            >
-                Query
-            </Typography>
-        </AppBar>
-    )
-}
+import { useMenuGlobalContext } from "../context/globalmenucontext";
+import { Toolbar } from "@mui/material";
 
-export default MenuBar
+const MenuBar: FC = () => {
+  const { menu, setMenu } = useMenuGlobalContext();
+
+  const handleQueryClick = () => {
+    setMenu("Query");
+  };
+
+  const handleHomeClick = () => {
+    setMenu("Home");
+  };
+
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Typography
+          onClick={handleHomeClick}
+          variant="h6"
+          component="div"
+          margin="10px"
+        >
+          Home
+        </Typography>
+
+        <Typography
+          onClick={handleQueryClick}
+          variant="h6"
+          component="div"
+          margin="10px"
+        >
+          Query
+        </Typography>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default MenuBar;
