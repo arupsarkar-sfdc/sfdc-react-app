@@ -64,9 +64,9 @@ const Query: FC = () => {
             children="Submit"
           />
         </article>
-        <div>
+        <div className="card">
           <h1>Results</h1>
-            {queryResults}
+            <div className="cards_item">{queryResults}</div>
         </div>
       </div>
     </div>

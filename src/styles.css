@@ -12,8 +12,11 @@ body {
   /* On screens that are 992px wide or less, the background color is blue */
   @media screen and (max-width: 992px) {
     body {
-      background-color: blue;
+      background-color: #272727;
       color: white;
+    }
+    .cards_item {
+      width: 50%;
     }
   }
   
@@ -23,6 +26,9 @@ body {
       background-color: olive;
       color: white;
     }
+    .cards_item {
+      width: 33.3333%;
+    }    
   }
   
   
@@ -41,7 +47,37 @@ body {
 .cards {
     display: flex;
     flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;    
  }
+
+ .cards_item {
+  display: flex;
+  padding: 1rem;
+} 
+
+.card_content {
+  padding: 1rem;
+  background: linear-gradient(to bottom left, #EF8D9C 40%, #FFC39E 100%);
+}
+
+.card_title {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  margin: 0px;
+}
+
+.card_text {
+  color: #ffffff;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;    
+  font-weight: 400;
+}
  
 .card {
     flex: 1 0 500px;

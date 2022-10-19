@@ -3,6 +3,12 @@ const path = require("path"); // NEW
 
 const jsforce = require("jsforce");
 const session = require("express-session");
+const pino = require('pino')
+const logger = pino({
+  transport: {
+    target: 'pino-pretty'
+  },
+})
 
 // Load and check config
 require("dotenv").config();
@@ -16,13 +22,13 @@ if (
     process.env.sessionSecretKey
   )
 ) {
-  console.error(
+  logger.error(
     "Cannot start app: missing mandatory configuration. Check your .env file."
   );
   process.exit(-1);
 }
 
-console.log("consumer key : ", process.env.consumerKey);
+logger.info(`Consumer Key : ${process.env.consumerKey}`);
 
 // Instantiate Salesforce client with .env configuration
 const oauth2 = new jsforce.OAuth2({
@@ -82,7 +88,7 @@ const mockResponse = [
 ];
 app.use(express.static(DIST_DIR)); // NEW
 app.get("/api", (req, res) => {
-  console.log("Got a ping from client");
+  logger.info(`Got a ping from client`);
   res.send(mockResponse);
 });
 
@@ -106,7 +112,7 @@ app.get("/auth/logout", (req, res) => {
   const conn = resumeSalesforceConnection(session);
   conn.logout((error) => {
     if (error) {
-      console.error("Salesforce OAuth revoke error: " + JSON.stringify(error));
+      logger.error("Salesforce OAuth revoke error: " + JSON.stringify(error));
       res.status(500).json(error);
       return;
     }
@@ -114,7 +120,7 @@ app.get("/auth/logout", (req, res) => {
     // Destroy server-side session
     session.destroy((error) => {
       if (error) {
-        console.error(
+        logger.error(
           "Salesforce session destruction error: " + JSON.stringify(error)
         );
       }
@@ -143,13 +149,13 @@ app.get("/auth/callback", (request, response) => {
   });
   conn.authorize(request.query.code, (error, userInfo) => {
     if (error) {
-      console.log("Salesforce authorization error: " + JSON.stringify(error));
+      logger.info("Salesforce authorization error: " + JSON.stringify(error));
       response.status(500).json(error);
       return;
     }
-    console.log("access token from salesforce: ", conn.accessToken);
-    console.log("instance url from salesforce: ", conn.instanceUrl);
-    console.log("refresh token from salesforce: ", conn.refreshToken);
+    logger.info(`access token from salesforce: ${conn.accessToken}`);
+    logger.info(`instance url from salesforce: ${conn.instanceUrl}`);
+    logger.info(`refresh token from salesforce: ${conn.refreshToken}`);
     // Store oauth session data in server (never expose it directly to client)
     request.session.sfdcAuth = {
       instanceUrl: conn.instanceUrl,
@@ -167,7 +173,7 @@ app.get("/api/query", (req, res) => {
     return;
   }
   const query = req.query.q;
-  console.log("Query submitted ", query);
+  logger.info(`Query submitted : ${query}`);
   if (!query) {
     res.status(400).send("Missing query parameter.");
     return;
@@ -175,11 +181,11 @@ app.get("/api/query", (req, res) => {
   const conn = resumeSalesforceConnection(session);
   conn.query(query, (error, result) => {
     if (error) {
-      console.error("Salesforce data API error: " + JSON.stringify(error));
+      logger.error("Salesforce data API error: " + JSON.stringify(error));
       res.status(500).json(error);
       return;
     } else {
-      console.log("query results : ", result);
+      logger.info(`query results : ${result}`);
       res.send(result);
       return;
     }
@@ -189,10 +195,16 @@ app.get("/api/query", (req, res) => {
 /**
  * Server Side Event: SSE - START
  */
-app.get("/auth/token", (req, res) => {
-  if (req.headers.accept === "text/event-stream") {
-    sendEvent(req, res);
+app.get("/auth/token", async (req, res) => {
+
+  try{
+    if (req.headers.accept === "text/event-stream") {
+      await sendEvent(req, res);
+    }
+  }catch(error){
+    logger.error(`Error accessing token : ${error}`)
   }
+
 });
 
 const writeEvent = (res, sseId, data) => {
@@ -224,5 +236,5 @@ const sendEvent = (req, res) => {
  */
 
 app.listen(port, function () {
-  console.log("App listening on port: " + port);
+  logger.info(`App listening on port: ${port}`);
 });
