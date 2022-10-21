@@ -5,6 +5,10 @@ import Button from "../buttons/CustomButtonComponent";
 // import { MenuContext, MenuContextInterface } from "../header/index"
 import { useMenuGlobalContext } from "../header/context/globalmenucontext";
 
+interface queryDate {
+  data: string;
+}
+
 const Query: FC = () => {
   const [queryParams, setQueryParams] = useState<string>(
     "SELECT Name from Account LIMIT 2"
@@ -68,13 +72,25 @@ const Query: FC = () => {
                 children="Submit"
               />
             </article>
-            <Box component="main" sx={{ p: 3 }}>
-              <Typography>{queryResults}</Typography>
+            <Box
+              style={{
+                overflowY: "auto",
+                maxHeight: "180px",
+                display: "flex",
+                flexGrow: 1,
+                flexDirection: "column",
+              }}
+            >
+              <Box
+                margin="10px"
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{ p: 2, border: '1px dashed grey' }}                
+              >
+                <Typography fontSize="10px">{queryResults}</Typography>
+              </Box>
             </Box>
-            {/* <div className="card">
-              <h1>Results</h1>
-              <div className="cards_item">{queryResults}</div>
-            </div> */}
           </div>
         </div>
       ) : (
