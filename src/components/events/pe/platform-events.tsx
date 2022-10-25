@@ -8,7 +8,7 @@ import { Button, TextField } from "@mui/material";
 const PlatformEvents: FC = () => {
   const [queryResults, setQueryResults] = useState<string>();
   const [evtParam, setEvtParam] = useState<string>("No Event");
-  const [evtPayload, setEvtPayload] = useState<string>("No Payload")
+  const [evtPayload, setEvtPayload] = useState<string>('')
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
