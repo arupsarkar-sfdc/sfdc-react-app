@@ -16,6 +16,10 @@ const MenuBar: FC = () => {
     setMenu("Home");
   };
 
+  const handleEventsClick = () => {
+    setMenu("Events")
+  }
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -36,6 +40,15 @@ const MenuBar: FC = () => {
         >
           Query
         </Typography>
+
+        <Typography
+          onClick={handleEventsClick}
+          variant="h6"
+          component="div"
+          margin="10px"
+        >
+          Events
+        </Typography>        
       </Toolbar>
     </AppBar>
   );

@@ -6,6 +6,7 @@ import Query from "./components/query/query";
 import Header from "./components/header";
 import { MenuGlobalContext } from "./components/header/context/globalmenucontext";
 import MainHome from "./components/home";
+import MainEvents from "./components/events";
 
 const App: FC = () => {
   const [menu, setMenu] = useState<string>("Home");
@@ -19,6 +20,9 @@ const App: FC = () => {
         </article>
         <article>
           <Query />
+        </article>
+        <article>
+          <MainEvents/>
         </article>
       </div>
     </MenuGlobalContext.Provider>

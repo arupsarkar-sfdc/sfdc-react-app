@@ -3,12 +3,12 @@ const path = require("path"); // NEW
 
 const jsforce = require("jsforce");
 const session = require("express-session");
-const pino = require('pino')
+const pino = require("pino");
 const logger = pino({
   transport: {
-    target: 'pino-pretty'
+    target: "pino-pretty",
   },
-})
+});
 
 // Load and check config
 require("dotenv").config();
@@ -28,7 +28,7 @@ if (
   process.exit(-1);
 }
 
-logger.info(`Consumer Key : ${process.env.consumerKey}`);
+let event_name = [];
 
 // Instantiate Salesforce client with .env configuration
 const oauth2 = new jsforce.OAuth2({
@@ -101,7 +101,9 @@ app.get("/", (req, res) => {
  */
 app.get("/auth/login", (request, response) => {
   // Redirect to Salesforce login/authorization page
-  response.redirect(oauth2.getAuthorizationUrl({ scope: 'api id web refresh_token' }));
+  response.redirect(
+    oauth2.getAuthorizationUrl({ scope: "api id web refresh_token" })
+  );
 });
 
 app.get("/auth/logout", (req, res) => {
@@ -196,15 +198,13 @@ app.get("/api/query", (req, res) => {
  * Server Side Event: SSE - START
  */
 app.get("/auth/token", async (req, res) => {
-
-  try{
+  try {
     if (req.headers.accept === "text/event-stream") {
       await sendEvent(req, res);
     }
-  }catch(error){
-    logger.error(`Error accessing token : ${error}`)
+  } catch (error) {
+    logger.error(`Error accessing token : ${error}`);
   }
-
 });
 
 const writeEvent = (res, sseId, data) => {
@@ -224,15 +224,111 @@ const sendEvent = (req, res) => {
     "Content-Type": "text/event-stream",
   });
   const sseId = new Date().toDateString();
-  if(conn.accessToken){
-    writeEvent(res, sseId, 'LoggedIn');
-  }else{
-    writeEvent(res, sseId, 'NotLoggedIn');
+  if (conn.accessToken) {
+    writeEvent(res, sseId, "LoggedIn");
+  } else {
+    writeEvent(res, sseId, "NotLoggedIn");
   }
-  
 };
 /**
  * Server Side Event: SSE - END
+ */
+
+/**
+ * Event to be tracked - Start
+ */
+
+app.get("/api/event", async (req, res) => {
+  try {
+    logger.info(`Event param to be tracked - ${req.query.eventParam}`);
+
+    const session = getSession(req, res);
+    if (session == null) {
+      return;
+    }
+    const conn = resumeSalesforceConnection(session);
+    if (conn) {
+      event_name = []
+      //assign the key to event_name for tracking PE
+      const newEvents = {
+        id: conn.accessToken,
+        event_value: req.query.eventParam,
+      }
+
+      event_name.push(newEvents)
+    }
+    //await sendEventStream(req, res, req.query.eventParam)
+    res.send([{ result: "Submitted" }]);
+  } catch (error) {
+    logger.error(`Error in /api/event ${error}`);
+  }
+});
+
+/**
+ * Event to be tracked - End
+ */
+
+/*
+ * Events Stream - START
+ */
+
+app.get("/api/events", async (req, res) => {
+  try {
+    logger.info(`Inside /api/events - start`);
+    logger.info(`Event to be tracked in server ${event_name[0].id}`);
+    res.writeHead(200, {
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+      "Content-Type": "text/event-stream",
+    });
+    res.flushHeaders();
+    if (req.headers.accept === "text/event-stream") {
+      logger.info(`Inside /api/events - if clause`);
+      await sendEventStream(req, res);
+    }
+  } catch (error) {
+    logger.error(`Error accessing token : ${error}`);
+  }
+});
+
+const writeEventStream = (res, sseId, data) => {
+  try {
+    logger.info(`Inside writeEventStream - start`);
+    res.write(`id: ${sseId}\n`);
+    res.write(`data: ${data}\n\n`);
+    logger.info(`Inside writeEventStream - end`);
+  } catch (error) {
+    logger.error(`Error writing event stream ${error}`);
+  }
+};
+
+const sendEventStream = (req, res) => {
+  try {
+    logger.info(`id name logging ${event_name[0].id}`);
+    logger.info(`event name logging ${event_name[0].event_value}`);
+
+    const session = getSession(req, res);
+    if (session == null) {
+      return;
+    }
+    const conn = resumeSalesforceConnection(session);
+    logger.info(`${conn}`);
+    conn.streaming
+      .topic(`/event/${event_name[0].event_value}`)
+      .subscribe((message) => {
+        const payload = JSON.stringify(message);
+        console.info(`${payload}`);
+
+        const sseId = Date.now().toString();
+        logger.info(`${sseId}`);
+        writeEventStream(res, sseId, payload);
+      });
+  } catch (error) {
+    logger.error(`Error sending event stream ${error}`);
+  }
+};
+/*
+ * Events Stream - END
  */
 
 app.listen(port, function () {
