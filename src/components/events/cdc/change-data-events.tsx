@@ -31,8 +31,10 @@ const ChangeDataEvents: FC = () => {
           <TextField
             id="outlined-multiline-static"
             label="results"
+            variant="outlined"
             fullWidth
             multiline
+            inputProps={{style: {fontSize: 12}}}
           />          
           </Grid>
         </Grid>

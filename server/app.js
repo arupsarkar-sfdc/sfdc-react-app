@@ -241,6 +241,7 @@ const sendEvent = (req, res) => {
 app.get("/api/event", async (req, res) => {
   try {
     logger.info(`Event param to be tracked - ${req.query.eventParam}`);
+    logger.info(`Event body - ${req.query.eventBody}`);
 
     const session = getSession(req, res);
     if (session == null) {
@@ -248,6 +249,19 @@ app.get("/api/event", async (req, res) => {
     }
     const conn = resumeSalesforceConnection(session);
     if (conn) {
+
+      //create platform event
+      if(req.query.eventBody) {
+        const jsonPayload = JSON.parse(req.query.eventBody)
+        conn.sobject(req.query.eventParam).create(jsonPayload, (err, response) => {
+          if(err) {
+            logger.error(`Error submitting event - ${err}`)
+          } else {
+            logger.info(`Event published ${response}`)
+          }
+        })
+      }
+
       event_name = []
       //assign the key to event_name for tracking PE
       const newEvents = {
