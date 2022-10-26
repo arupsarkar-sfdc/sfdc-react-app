@@ -8,7 +8,7 @@ import { Button, TextField } from "@mui/material";
 const PlatformEvents: FC = () => {
   const [queryResults, setQueryResults] = useState<string>();
   const [evtParam, setEvtParam] = useState<string>("No Event");
-  const [evtPayload, setEvtPayload] = useState<string>('')
+  const [evtPayload, setEvtPayload] = useState<string>("");
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -19,10 +19,12 @@ const PlatformEvents: FC = () => {
   }));
 
   //capture platform event body to subscribe and publish
-  const handleEventPayloadChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.preventDefault()
-    setEvtPayload(e.target.value.trim())
-  }
+  const handleEventPayloadChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    e.preventDefault();
+    setEvtPayload(e.target.value.trim());
+  };
 
   //capture platform event name to subscribe and publish
   const handleEventNameChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -33,9 +35,14 @@ const PlatformEvents: FC = () => {
 
   const handleEventClick = () => {
     console.log(`Event param to be tracked ${evtParam} Started`);
-    fetch(`/api/event?eventParam=${encodeURI(evtParam)}&eventBody=${encodeURI(evtPayload)}`, {
-      headers: { "Content-Type": "application/json" },
-    })
+    fetch(
+      `/api/event?eventParam=${encodeURI(evtParam)}&eventBody=${encodeURI(
+        evtPayload
+      )}`,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
       .then((res) => {
         if (res.ok) {
           console.log("Raw response : ", JSON.stringify(res));
@@ -72,7 +79,7 @@ const PlatformEvents: FC = () => {
         "message",
         (e: any) => {
           console.log("Events payload received ", e.data);
-          setQueryResults(e.data)
+          setQueryResults(e.data);
         },
         false
       );
@@ -116,7 +123,16 @@ const PlatformEvents: FC = () => {
             multiline
             onChange={handleEventPayloadChange}
           />
+          <Button
+            onClick={handleEventClick}
+            size="small"
+            variant="contained"
+            sx={{ mt: 2 }}
+          >
+            Submit
+          </Button>
         </Grid>
+
         <Grid xs={8}>
           {/* <Item>PE: Response from salesforce server...</Item> */}
           <TextField
@@ -125,14 +141,10 @@ const PlatformEvents: FC = () => {
             variant="outlined"
             fullWidth
             multiline
-            inputProps={{style: {fontSize: 12}}}
+            inputProps={{ style: { fontSize: 12 } }}
             value={queryResults}
           />
         </Grid>
-
-        <Button onClick={handleEventClick} size="small" variant="contained">
-          Submit
-        </Button>
       </Grid>
     </Box>
   );

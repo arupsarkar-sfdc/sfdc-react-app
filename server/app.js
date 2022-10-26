@@ -267,6 +267,7 @@ app.get("/api/event", async (req, res) => {
       const newEvents = {
         id: conn.accessToken,
         event_value: req.query.eventParam,
+        event_type: 'pe'
       }
 
       event_name.push(newEvents)
@@ -327,7 +328,22 @@ const sendEventStream = (req, res) => {
     }
     const conn = resumeSalesforceConnection(session);
     logger.info(`${conn}`);
-    conn.streaming
+    logger.info(`event type : ${event_name[0].event_type}`);
+    if(event_name[0].event_type == 'cdc') {
+      logger.info(`Invoking CDC streaming - Start, tracking ${event_name[0].event_value} object`)
+      conn.streaming
+      .topic(`/data/${event_name[0].event_value}`)
+      .subscribe((message) => {
+        const payload = JSON.stringify(message);
+        console.info(`${payload}`);
+
+        const sseId = Date.now().toString();
+        logger.info(`${sseId}`);
+        writeEventStream(res, sseId, payload);
+      });
+    } else if(event_name[0].event_type == 'pe') {
+      logger.info(`Invoking PE streaming - Start`)
+      conn.streaming
       .topic(`/event/${event_name[0].event_value}`)
       .subscribe((message) => {
         const payload = JSON.stringify(message);
@@ -337,6 +353,8 @@ const sendEventStream = (req, res) => {
         logger.info(`${sseId}`);
         writeEventStream(res, sseId, payload);
       });
+    }
+
   } catch (error) {
     logger.error(`Error sending event stream ${error}`);
   }
@@ -344,6 +362,35 @@ const sendEventStream = (req, res) => {
 /*
  * Events Stream - END
  */
+
+/** Change Data Capture - Start */
+
+app.get('/api/change/event', async (req, res, next) => {
+
+  logger.info(`CDC api name - ${req.query.changeEventName}`)
+  const session = getSession(req, res);
+  if (session == null) {
+    return;
+  }
+  const conn = resumeSalesforceConnection(session);
+  if (conn) {
+    if(req.query.changeEventName) {
+
+      event_name = []
+      //assign the key to event_name for tracking CDC
+      const newEvents = {
+        id: conn.accessToken,
+        event_value: req.query.changeEventName,
+        event_type: 'cdc'
+      }
+
+      event_name.push(newEvents)
+
+    }
+  }  
+  res.send([{ result: "Submitted" }]);
+})
+/** Change Data Capture - End */
 
 app.listen(port, function () {
   logger.info(`App listening on port: ${port}`);
