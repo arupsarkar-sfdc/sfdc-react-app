@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Tooltip } from "@mui/material";
 
 const PlatformEvents: FC = () => {
   const [queryResults, setQueryResults] = useState<string>();
@@ -108,21 +108,26 @@ const PlatformEvents: FC = () => {
       <Grid container spacing={2} columns={16}>
         <Grid xs={8}>
           {/* <Item>Paste your PE JSON here...</Item> */}
-          <TextField
-            id="outlined-basic"
-            label="api"
-            variant="outlined"
-            fullWidth
-            onChange={handleEventNameChange}
-          />
-          <TextField
-            margin="normal"
-            id="outlined-multiline-static"
-            label="json"
-            fullWidth
-            multiline
-            onChange={handleEventPayloadChange}
-          />
+          <Tooltip title="api name of PE. Example: payment__e or account__e">
+            <TextField
+              id="outlined-basic"
+              label="api"
+              variant="outlined"
+              fullWidth
+              onChange={handleEventNameChange}
+            />
+          </Tooltip>
+          <Tooltip title='JSON payload of PE: Example: {"confirmation_number__c":"12345"}'>
+            <TextField
+              margin="normal"
+              id="outlined-multiline-static"
+              label="json"
+              fullWidth
+              multiline
+              onChange={handleEventPayloadChange}
+            />
+          </Tooltip>
+
           <Button
             onClick={handleEventClick}
             size="small"
@@ -135,15 +140,17 @@ const PlatformEvents: FC = () => {
 
         <Grid xs={8}>
           {/* <Item>PE: Response from salesforce server...</Item> */}
-          <TextField
-            id="outlined-multiline-static"
-            label="results"
-            variant="outlined"
-            fullWidth
-            multiline
-            inputProps={{ style: { fontSize: 12 } }}
-            value={queryResults}
-          />
+          <Tooltip title="Results of PE events will pop up here">
+            <TextField
+              id="outlined-multiline-static"
+              label="results"
+              variant="outlined"
+              fullWidth
+              multiline
+              inputProps={{ style: { fontSize: 12 } }}
+              value={queryResults}
+            />
+          </Tooltip>
         </Grid>
       </Grid>
     </Box>

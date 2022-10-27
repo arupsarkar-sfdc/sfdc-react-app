@@ -3,12 +3,20 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Button, Hidden, InputLabel, NativeSelect, SelectChangeEvent, TextField } from "@mui/material";
+import {
+  Button,
+  Hidden,
+  InputLabel,
+  NativeSelect,
+  SelectChangeEvent,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 
 const ChangeDataEvents: FC = () => {
   const [evtParam, setEvtParam] = useState<string>("");
   const [queryResults, setQueryResults] = useState<string>();
-  const [showApi, setShowApi] = useState<boolean>(false)
+  const [showApi, setShowApi] = useState<boolean>(false);
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -24,15 +32,15 @@ const ChangeDataEvents: FC = () => {
   };
 
   const handleChange = (e: string) => {
-    console.log(`CDC Selected ${e}`)
-    if(e == '10') {
-      setShowApi(true)
+    console.log(`CDC Selected ${e}`);
+    if (e == "10") {
+      setShowApi(true);
       // track all CDC events
-      setEvtParam('ChangeEvents')
-    }else if(e == '20') {
-      setShowApi(false)
+      setEvtParam("ChangeEvents");
+    } else if (e == "20") {
+      setShowApi(false);
     }
-  }
+  };
   const handleChangeEventClick = () => {
     console.log(evtParam);
     fetch(`/api/change/event?changeEventName=${encodeURI(evtParam)}`, {
@@ -106,21 +114,26 @@ const ChangeDataEvents: FC = () => {
               name: "cdc",
               id: "uncontrolled-native",
             }}
-            onChange={event => {handleChange(event.target.value as string) }}
+            onChange={(event) => {
+              handleChange(event.target.value as string);
+            }}
           >
             <option value={10}>Yes</option>
             <option value={20}>No</option>
           </NativeSelect>
 
-          <TextField
-            disabled={showApi}
-            margin="normal"
-            id="outlined-basic"
-            label="api"
-            variant="outlined"
-            fullWidth
-            onChange={handleChangeApiName}
-          />
+          <Tooltip title="api name of cdc. Standard Object: AccountChangeEvent, Custom Object: Employee__ChangeEvent">
+            <TextField
+              disabled={showApi}
+              margin="normal"
+              id="outlined-basic"
+              label="api"
+              variant="outlined"
+              fullWidth
+              onChange={handleChangeApiName}
+            />
+          </Tooltip>
+
           <Button
             onClick={handleChangeEventClick}
             size="small"
@@ -131,15 +144,16 @@ const ChangeDataEvents: FC = () => {
           </Button>
         </Grid>
         <Grid xs={8}>
-          <TextField
-            id="outlined-multiline-static"
-            label="results"
-            variant="outlined"
-            fullWidth
-            multiline
-            value={queryResults}
-            inputProps={{ style: { fontSize: 12 } }}
-          />
+          <Tooltip title="Results of CDC events will pop up here">
+            <TextField
+              id="outlined-multiline-static"
+              variant="outlined"
+              fullWidth
+              multiline
+              value={queryResults}
+              inputProps={{ style: { fontSize: 12 } }}
+            />
+          </Tooltip>
         </Grid>
       </Grid>
     </Box>
