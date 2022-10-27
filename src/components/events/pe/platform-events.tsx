@@ -143,7 +143,6 @@ const PlatformEvents: FC = () => {
           <Tooltip title="Results of PE events will pop up here">
             <TextField
               id="outlined-multiline-static"
-              label="results"
               variant="outlined"
               fullWidth
               multiline
