@@ -26,14 +26,14 @@ const Home: FC = () => {
             </p>
             <p>
             b) Change Data Capture: Track change data capture i) Select "Yes" to
-            capture all CDC ii)Select "No", specify a api name of CDC to track.
+            capture all CDC ii)Select "No", specify an api name of CDC to track.
             </p>
 
             <Typography variant="h6" gutterBottom sx={{ color: 'error.main' }}>
               [PLEASE DO NOT FORGET TO CLICK SUBMIT]
             </Typography>
           </p>
-          <p>3. Click Logout - It will destroy the OAuth session</p>
+          <p>4. Click Logout - It will destroy the OAuth session</p>
         </div>
       ) : (
         <div></div>

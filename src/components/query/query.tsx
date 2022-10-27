@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, TextField, Tooltip, Typography } from "@mui/material";
 import React, { useState, useEffect, FC, useContext } from "react";
 import "../../styles.css";
 import Button from "../buttons/CustomButtonComponent";
@@ -28,7 +28,8 @@ const Query: FC = () => {
       {menu == "Query" ? (
         <div>
           <article>
-            <TextField
+          <Tooltip title="SOQL: select firstname, lastname from contact order by lastname, firstname limit 10">
+          <TextField
               placeholder="SELECT Name from Account LIMIT 2"
               fullWidth
               multiline
@@ -36,7 +37,9 @@ const Query: FC = () => {
               id="query"
               onChange={handleQuery}
               margin="normal"
-            ></TextField>
+            ></TextField>            
+          </Tooltip>
+
           </article>
           <div>
             <article>
@@ -81,7 +84,7 @@ const Query: FC = () => {
                 flexDirection: "column",
               }}
             >
-              <Box
+              {/* <Box
                 margin="10px"
                 display="flex"
                 justifyContent="space-between"
@@ -89,7 +92,20 @@ const Query: FC = () => {
                 sx={{ p: 2, border: '1px dashed grey' }}                
               >
                 <Typography fontSize="10px">{queryResults}</Typography>
-              </Box>
+              </Box> */}
+
+              <Tooltip title="Results of SOQL will be visible here">
+                <TextField
+                  id="outlined-multiline-static"
+                  label="results"
+                  variant="outlined"
+                  fullWidth
+                  multiline
+                  inputProps={{ style: { fontSize: 12 } }}
+                  value={queryResults}
+                  margin="normal"
+                />
+              </Tooltip>
             </Box>
           </div>
         </div>
