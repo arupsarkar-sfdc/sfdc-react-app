@@ -4,6 +4,7 @@ import "../../styles.css";
 import Button from "../buttons/CustomButtonComponent";
 // import { MenuContext, MenuContextInterface } from "../header/index"
 import { useMenuGlobalContext } from "../header/context/globalmenucontext";
+import { useRecentsGlobalContext } from "../context/globalrecentscontext";
 
 interface queryDate {
   data: string;
@@ -16,6 +17,7 @@ const Query: FC = () => {
 
   const [queryResults, setQueryResults] = useState<string>();
   const { menu } = useMenuGlobalContext();
+  const { recents, setRecents } = useRecentsGlobalContext() 
 
   const handleQuery = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
@@ -67,7 +69,8 @@ const Query: FC = () => {
                       console.error(error);
                     })
                     .finally(() => {
-                      console.log("Query fetch complete");
+                      console.log("Query fetch complete, firinf recents", queryParams);
+                      setRecents(queryParams)                      
                     });
                 }}
                 radius="5%"
@@ -84,15 +87,6 @@ const Query: FC = () => {
                 flexDirection: "column",
               }}
             >
-              {/* <Box
-                margin="10px"
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{ p: 2, border: '1px dashed grey' }}                
-              >
-                <Typography fontSize="10px">{queryResults}</Typography>
-              </Box> */}
 
               <Tooltip title="Results of SOQL will be visible here">
                 <TextField
