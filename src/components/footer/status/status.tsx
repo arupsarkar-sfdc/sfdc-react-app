@@ -40,51 +40,65 @@ import { useRecentsGlobalContext } from "../../context/globalrecentscontext";
 
 // }
 
-function refreshMessages(recents: string) {
+function refreshMessages(recents: string, index: number) {
 
-  const history = [{
-    primary: Date.now(),
-    secondary: recents,
-    person: "/static/images/avatar/5.jpg"
-  }]
+  try{
+    if(index == 0) {
+      const newMessages = [...messageExamples, {primary: Date().toLocaleString(), secondary: recents, person: "/static/images/avatar/5.jpg"}]
+      return newMessages;
+    }else if(index == 3) {
+      return helpMessages
+    }
 
+  }
+  catch(error) {
+    console.error('Error - ', error)
+  }
 
-    //   messageExamples.concat([{
-    // primary: "Brunch this week?",
-    // secondary:
-    //   recents,
-    // person: "/static/images/avatar/5.jpg",      
-    // }])
-  return Array.from(new Array(50)).map(
-    () => messageExamples[messageExamples.length]
-  );    
+  // const history: MessageExample[] = ([
+  //   {
+  //     primary: "Brunch this week?",
+  //     secondary:
+  //       recents,
+  //     person: "/static/images/avatar/5.jpg",
+  //   },
+  // ]);
+  // messageExamples.concat(history);
+
+  // const history: MessageExample = [{
+  //   primary: Date.now().toString(),
+  //   secondary: recents,
+  //   person: "/static/images/avatar/5.jpg"
+  // }]
+
+  // messageExamples.concat(history)
+
+  // return Array.from(new Array(50)).map(
+  //   () => messageExamples[messageExamples.length]
+  // );    
 }
 
 export default function FixedBottomNavigation() {
   const [value, setValue] = React.useState(0);
   const ref = React.useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = React.useState(() => refreshMessages('History'));
+  // const [messages, setMessages] = React.useState(() => refreshMessages('History'));
+  const [messages, setMessages] = React.useState<MessageExample[] | undefined>([]);  
   const [showMessage, setShowMessages] = React.useState<boolean>(false);
 
   const { recents } = useRecentsGlobalContext();
   const [history, setHistory] = React.useState<string>();
-  const [logs, setLogs] = React.useState<HistoryLog[]>([])
 
   React.useEffect(() => {
     (ref.current as HTMLDivElement).ownerDocument.body.scrollTop = 0;
     setHistory(recents)    
-    setMessages(refreshMessages(recents));
-
-    // console.log(recents)
+    setMessages(refreshMessages(recents, value));
   }, [value, setMessages, recents]);
 
   return (
     <Box sx={{ pb: 7 }} ref={ref}>
-      {/* <CssBaseline /> */}
-      {history}
       {showMessage ? (
         <List>
-          {messages.map(({ primary, secondary, person }, index) => (
+          {messages?.map(({ primary, secondary, person }, index) => (
             <ListItem button key={index + person}>
               <ListItemAvatar>
                 <Avatar alt="Profile Picture" src={person} />
@@ -105,9 +119,24 @@ export default function FixedBottomNavigation() {
           showLabels
           value={value}
           onChange={(event, newValue) => {
-            console.log(newValue);
-            setValue(newValue);
-            setShowMessages(!showMessage);
+            if(newValue === 0) {
+              console.log(newValue);
+              setValue(newValue);
+              setShowMessages(!showMessage);
+            } else if (newValue === 1) {
+              console.log(newValue);
+              setValue(newValue);
+              //setShowMessages(!showMessage);
+            } else if (newValue === 2) {
+              console.log(newValue);
+              setValue(newValue);
+              //setShowMessages(!showMessage);
+            } else if (newValue === 3) {
+              console.log(newValue);
+              setValue(newValue);
+              setShowMessages(!showMessage);
+            } 
+
           }}
         >
           <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
@@ -123,9 +152,10 @@ export default function FixedBottomNavigation() {
   );
 }
 
-interface HistoryLog {
+interface HelpMessages {
   primary: string,
   secondary: string,
+  person: string
 }
 
 interface MessageExample {
@@ -134,13 +164,43 @@ interface MessageExample {
   person: string;
 }
 
-const messageExamples: readonly MessageExample[] = [
+const helpMessages: HelpMessages[] = [
   {
-    primary: "Brunch this week?",
+    primary: "Platform Events Developer Guide",
     secondary:
-      "I'll be in the neighbourhood this week. Let's grab a bite to eat",
+      "https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm",
     person: "/static/images/avatar/5.jpg",
   },
+  {
+    primary: "Change Data Capture",
+    secondary:
+      "https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_intro.htm",
+    person: "/static/images/avatar/5.jpg",
+  },  
+  {
+    primary: "Execution Governors and Limits",
+    secondary:
+      "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm", 
+    person: "/static/images/avatar/5.jpg",
+  },
+  {
+    primary: "Platform Event Allocations",
+    secondary:
+      "https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm", 
+    person: "/static/images/avatar/5.jpg",
+  },
+
+  
+]
+
+
+const messageExamples: readonly MessageExample[] = [
+  // {
+  //   primary: "Brunch this week?",
+  //   secondary:
+  //     "I'll be in the neighbourhood this week. Let's grab a bite to eat",
+  //   person: "/static/images/avatar/5.jpg",
+  // },
   // {
   //   primary: "Birthday Gift",
   //   secondary: `Do you have a suggestion for a good present for John on his work
