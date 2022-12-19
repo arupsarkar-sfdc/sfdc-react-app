@@ -6,11 +6,18 @@ import Button from "../buttons/CustomButtonComponent";
 import { useMenuGlobalContext } from "../header/context/globalmenucontext";
 import { useRecentsGlobalContext } from "../context/globalrecentscontext";
 
+import { useDispatch } from "react-redux";
+import { querySlice } from "../store/querySlice";
+
 interface queryDate {
   data: string;
 }
 
 const Query: FC = () => {
+
+  const dispatch = useDispatch();
+  const [body, setBody] = useState("")
+
   const [queryParams, setQueryParams] = useState<string>(
     "SELECT Name from Account LIMIT 2"
   );
@@ -22,6 +29,7 @@ const Query: FC = () => {
   const handleQuery = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     console.log(e.target.value);
+    setBody(e.target.value.trim())
     setQueryParams(e.target.value.trim());
   };
 
@@ -37,7 +45,9 @@ const Query: FC = () => {
               multiline
               label="query"
               id="query"
-              onChange={handleQuery}
+              onChange={
+                handleQuery
+              }
               margin="normal"
             ></TextField>            
           </Tooltip>
@@ -69,8 +79,10 @@ const Query: FC = () => {
                       console.error(error);
                     })
                     .finally(() => {
-                      console.log("Query fetch complete, firinf recents", queryParams);
-                      setRecents(queryParams)                      
+                      console.log("Query fetch complete : ", body);
+                      setRecents(queryParams)  
+                      dispatch(querySlice.actions.addQuery({body}))    
+                      setBody("")                
                     });
                 }}
                 radius="5%"

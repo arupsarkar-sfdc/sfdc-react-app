@@ -17,6 +17,9 @@ import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import { useRecentsGlobalContext } from "../../context/globalrecentscontext";
 
+import { selectQueries } from "../../store/querySlice";
+import { useSelector } from "react-redux";
+
 // function refreshMessages(): MessageExample[] {
   // const getRandomInt = (max: number) =>
   // Math.floor(Math.random() * Math.floor(max));
@@ -45,7 +48,11 @@ function refreshMessages(recents: string, index: number) {
   try{
     if(index == 0) {
       const newMessages = [...messageExamples, {primary: Date().toLocaleString(), secondary: recents, person: "/static/images/avatar/5.jpg"}]
-      return newMessages;
+      //messageExamples = [...messageExamples, newMessages]
+      messageExamples.concat(...messageExamples, newMessages)
+      console.log(newMessages)
+      console.log(messageExamples)
+      return messageExamples;
     }else if(index == 3) {
       return helpMessages
     }
@@ -82,30 +89,51 @@ export default function FixedBottomNavigation() {
   const [value, setValue] = React.useState(0);
   const ref = React.useRef<HTMLDivElement>(null);
   // const [messages, setMessages] = React.useState(() => refreshMessages('History'));
-  const [messages, setMessages] = React.useState<MessageExample[] | undefined>([]);  
+  const [messages, setMessages] = React.useState<MessageExample[]>([]);  
   const [showMessage, setShowMessages] = React.useState<boolean>(false);
-
+  const [helpMessages, sethelpMessages] = React.useState<MessageExample[]>([]);  
   const { recents } = useRecentsGlobalContext();
-  const [history, setHistory] = React.useState<string>();
+  const [history, setHistory] = React.useState<string | undefined>();
+
+  const queries = useSelector(selectQueries);
 
   React.useEffect(() => {
     (ref.current as HTMLDivElement).ownerDocument.body.scrollTop = 0;
-    setHistory(recents)    
-    setMessages(refreshMessages(recents, value));
-  }, [value, setMessages, recents]);
+    //setHistory(recents)    
+    if(value == 0) {
+      //setMessages(messages => [...messages, {primary: Date().toLocaleString(), secondary: queries, person: "https://gravatar.com/avatar/d14d281f48411f9603430ee4ae1a12ca?s=400&d=robohash&r=x"}]);
+    }else if(value == 3) {
+
+    }
+
+    //setMessages(refreshMessages(recents, value));
+    // setHistory(recents)
+  }, [value, recents]);
 
   return (
     <Box sx={{ pb: 7 }} ref={ref}>
       {showMessage ? (
         <List>
-          {messages?.map(({ primary, secondary, person }, index) => (
+          <div>
+            Showing Query History:
+          </div>
+          
+          {
+            queries.map((query) => (
+              <li key={query.id}>
+                <div>
+                  {query.body}
+                </div>
+              </li>
+            ))}
+          {/* {messages?.map(({ primary, secondary, person }, index) => (
             <ListItem button key={index + person}>
               <ListItemAvatar>
                 <Avatar alt="Profile Picture" src={person} />
               </ListItemAvatar>
               <ListItemText primary={primary} secondary={secondary} />
             </ListItem>
-          ))}
+          ))} */}
         </List>
       ) : (
         <div></div>
@@ -123,6 +151,7 @@ export default function FixedBottomNavigation() {
               console.log(newValue);
               setValue(newValue);
               setShowMessages(!showMessage);
+              // setMessages(messages => [...messages, {primary: Date().toLocaleString(), secondary: recents, person: "/static/images/avatar/5.jpg"}]);
             } else if (newValue === 1) {
               console.log(newValue);
               setValue(newValue);
@@ -194,7 +223,7 @@ const helpMessages: HelpMessages[] = [
 ]
 
 
-const messageExamples: readonly MessageExample[] = [
+let messageExamples: MessageExample[] = [
   // {
   //   primary: "Brunch this week?",
   //   secondary:

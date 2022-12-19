@@ -11,31 +11,36 @@ import FixedBottomNavigation from "./components/footer/status/status";
 import { CssBaseline } from "@mui/material";
 import { RecentsGlobalContext } from "./components/context/globalrecentscontext";
 
+import { store } from "./components/store/store";
+import { Provider } from "react-redux";
+
 const App: FC = () => {
   const [menu, setMenu] = useState<string>("Home");
   const [recents, setRecents] = useState<string>("Recents");
 
   return (
-    <MenuGlobalContext.Provider value={{ menu, setMenu }}>
-      <RecentsGlobalContext.Provider value={{ recents, setRecents }}>
-        <CssBaseline />
-        <div className="center">
-          <Header />
-          <article>
-            <MainHome />
-          </article>
-          <article>
-            <Query />
-          </article>
-          <article>
-            <MainEvents />
-          </article>
-          <article>
-            <FixedBottomNavigation />
-          </article>
-        </div>
-      </RecentsGlobalContext.Provider>
-    </MenuGlobalContext.Provider>
+    <Provider store={store}>
+      <MenuGlobalContext.Provider value={{ menu, setMenu }}>
+        <RecentsGlobalContext.Provider value={{ recents, setRecents }}>
+          <CssBaseline />
+          <div className="center">
+            <Header />
+            <article>
+              <MainHome />
+            </article>
+            <article>
+              <Query />
+            </article>
+            <article>
+              <MainEvents />
+            </article>
+            <article>
+              <FixedBottomNavigation />
+            </article>
+          </div>
+        </RecentsGlobalContext.Provider>
+      </MenuGlobalContext.Provider>
+    </Provider>
   );
 };
 
