@@ -401,7 +401,9 @@ app.get('/api/change/event', async (req, res, next) => {
 /** Change Data Capture - End */
 
 app.get('/unifiedprofile', (req, res) => {
-  const query = `select "ssot__Id__c", "ssot__FirstName__c", "ssot__LastName__c" from "UnifiedIndividualCUST" WHERE "ssot__LastName__c" = 'Boise' AND "ssot__FirstName__c" = 'Jenny'`
+  const unified_id = req.query.unifiedid;
+  console.log(unified_id)
+  const query = `select "ssot__Id__c", "ssot__FirstName__c", "ssot__LastName__c" from "UnifiedIndividualCUST" WHERE "ssot__LastName__c" = 'Boise' AND "ssot__FirstName__c" = 'Jenny' LIMIT 1`
   pool.query(query, (err, result) => {
     if (err) {
       throw err;
