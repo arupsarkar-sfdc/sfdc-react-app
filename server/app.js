@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path"); // NEW
+const { Pool } = require('pg');
 
 const jsforce = require("jsforce");
 const session = require("express-session");
@@ -8,6 +9,13 @@ const logger = pino({
   transport: {
     target: "pino-pretty",
   },
+});
+// connecting to heroku postgress db
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Load and check config
@@ -391,6 +399,16 @@ app.get('/api/change/event', async (req, res, next) => {
   res.send([{ result: "Submitted" }]);
 })
 /** Change Data Capture - End */
+
+app.get('/unifiedprofile', (req, res) => {
+  const query = `select "ssot__Id__c", "ssot__FirstName__c", "ssot__LastName__c" from "UnifiedIndividualCUST" WHERE "ssot__LastName__c" = 'Boise' AND "ssot__FirstName__c" = 'Jenny'`
+  pool.query(query, (err, result) => {
+    if (err) {
+      throw err;
+    }
+    res.send(result.rows);
+  });
+});
 
 app.listen(port, function () {
   logger.info(`App listening on port: ${port}`);
