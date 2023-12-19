@@ -33,6 +33,8 @@ const KafkaClient: FC = () => {
   const [kafkaConfig, setKafkaConfig] = useState<KafkaConfig | undefined>(undefined);
   const [kafka, setKafka] = useState<Kafka | undefined>(undefined);
 
+  const {X509Certificate} = require('crypto') 
+
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
     fetch("/api/env")
@@ -56,8 +58,8 @@ const KafkaClient: FC = () => {
         console.log("KafkaClientbroker 2 ", broker[2]);                
         console.log("KafkaClientbroker 3 ", broker[3]);      
         try{
-            const crypto = require("crypto") 
-            const kafkaCert = new crypto.X509Certificate(envData.kafka_trusted_cert)
+            //make the input to X509Certificate a buffer of kafka trsuted cert
+            const kafkaCert = new X509Certificate(envData.kafka_trusted_cert)
             console.log("KafkaClientkafkaCert", kafkaCert);
             console.log("KafkaClientkafkaCert.subject", kafkaCert.subject);
             console.log("KafkaClientkafkaCert.issuer", kafkaCert.issuer);            
