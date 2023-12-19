@@ -48,20 +48,18 @@ const KafkaClient: FC = () => {
         // set the envData to the state variable env
         setEnv(envData);
         //split the kafka_url having a delimiter of ',' and assign it to broker variable
-        const broker = envData.kafka_url.split(",");
+        const brokerArray = envData.kafka_url.split(",");
+        //iterate the string array and replace the kafka+ssl:// with empty string
+        for (let i = 0; i < brokerArray.length; i++) {
+          brokerArray[i] = brokerArray[i].replace(/kafka\+ssl:\/\//gi, "");
+        }
         //set the broker variable to the state variable broker
-        setBroker(broker);
+        setBroker(brokerArray);
         try {
           const kafkaConfig: KafkaConfig = {
             clientId: "my-app",
             brokers: [
-              broker[0].replace(/kafka\+ssl:\/\//gi, ""),
-              broker[1].replace(/kafka\+ssl:\/\//gi, ""),
-              broker[2].replace(/kafka\+ssl:\/\//gi, ""),
-              broker[3].replace(/kafka\+ssl:\/\//gi, ""),
-              broker[4].replace(/kafka\+ssl:\/\//gi, ""),
-              broker[5].replace(/kafka\+ssl:\/\//gi, ""),
-              broker[6].replace(/kafka\+ssl:\/\//gi, ""),
+              broker[0]
             ],
             ssl: {
               rejectUnauthorized: false,
