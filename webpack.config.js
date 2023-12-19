@@ -29,6 +29,13 @@ module.exports = {
   entry: ["./src/index.tsx",],
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
+    fallback: {
+      "crypto": false,
+      "zlib": false,
+      "net": false,
+      "tls": false,
+      "assert": false
+    }
   },
   output: {
     // NEW
