@@ -59,7 +59,10 @@ const KafkaClient: FC = () => {
         console.log("KafkaClientbroker 3 ", broker[3]);      
         try{
             //make the input to X509Certificate a buffer of kafka trsuted cert
-            const kafkaCert = new X509Certificate(envData.kafka_trusted_cert)
+            
+            //convert envData.kafka_trusted_cert to a buffer
+            const kafkaCertBuffer = Buffer.from(envData.kafka_trusted_cert, 'base64');
+            const kafkaCert = new X509Certificate(kafkaCertBuffer)
             console.log("KafkaClientkafkaCert", kafkaCert);
             console.log("KafkaClientkafkaCert.subject", kafkaCert.subject);
             console.log("KafkaClientkafkaCert.issuer", kafkaCert.issuer);            
