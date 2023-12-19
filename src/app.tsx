@@ -13,6 +13,7 @@ import { RecentsGlobalContext } from "./components/context/globalrecentscontext"
 
 import { store } from "./components/store/store";
 import { Provider } from "react-redux";
+import KafkaHome from "./components/kafka";
 
 const App: FC = () => {
   const [menu, setMenu] = useState<string>("Home");
@@ -33,6 +34,9 @@ const App: FC = () => {
             </article>
             <article>
               <MainEvents />
+            </article>
+            <article>
+              <KafkaHome />
             </article>
             <article>
               <FixedBottomNavigation />

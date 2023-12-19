@@ -19,6 +19,10 @@ const MenuBar: FC = () => {
   const handleEventsClick = () => {
     setMenu("Events")
   }
+  const handleKafkaClick = () => {
+    setMenu("Kafka")
+  }
+
 
   return (
     <AppBar position="static">
@@ -49,6 +53,14 @@ const MenuBar: FC = () => {
         >
           Events
         </Typography>        
+
+        <Typography 
+          onClick={handleKafkaClick}
+          variant="h6" 
+          component="div" 
+          margin="10px">
+            Kafka
+        </Typography>
       </Toolbar>
     </AppBar>
   );
