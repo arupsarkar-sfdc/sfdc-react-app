@@ -57,7 +57,7 @@
   "devDependencies": {
     "webpack-dev-server": "^4.9.0"
   },
-  "browser": {
-    "crypto": false
-  }  
+  "resolve.fallback": { 
+    "crypto": false 
+  }      
 }
