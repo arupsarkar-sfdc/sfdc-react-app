@@ -422,9 +422,9 @@ const checkx509Certificate = async () => {
   try{
     console.log("inside checkx509Certificate")
     //replace all \n with no space in process.env.KAFKA_TRUSTED_CERT
-    process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\n/g, '');
-    // remove any trailing begining and end spaces from the cert
-    process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\s+/g, '');
+    process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\\n/gm, '\n')
+    // // remove any trailing begining and end spaces from the cert
+    // process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\s+/g, '');
 
     console.log("trusted cert after ", process.env.KAFKA_TRUSTED_CERT)
     const { X509Certificate } = require("crypto");
