@@ -54,7 +54,7 @@ const KafkaClient: FC = () => {
         const brokerArray = envData.kafka_url.split(",");
         //iterate the string array and replace the kafka+ssl:// with empty string
         for (let i = 0; i < brokerArray.length; i++) {
-          brokerArray[i] = brokerArray[i].replace(/kafka\+ssl:\/\//gi, "");
+          brokerArray[i] = "pearl-3815." + brokerArray[i].replace(/kafka\+ssl:\/\//gi, "");
           //push the brokerArray to kafkaBroker array
           kafkaBroker.push(brokerArray[i]);
         }
@@ -65,7 +65,7 @@ const KafkaClient: FC = () => {
           const kafkaConfig: KafkaConfig = {
             clientId: "my-app",
             brokers: [
-              kafkaBroker[0]
+              broker[0], broker[1], broker[2]
             ],
             ssl: {
               rejectUnauthorized: false,
@@ -99,12 +99,23 @@ const KafkaClient: FC = () => {
   };
 
   const startProducer = async () => {
-    const producer = kafka!.producer();
-    await producer.connect();
-    await producer.send({
-      topic: "datacloud-streaming-channel",
-      messages: [{ key: "key1", value: "Hello KafkaJS user!" }],
-    });
+    try{
+      const producer = kafka!.producer();
+      console.log("producer", producer);
+      await producer.connect()
+        .then(() => console.log("producer connected"))
+        .catch((error) => console.error("producer connection error --> ", error))
+
+      await producer.send({
+        topic: "datacloud-streaming-channel",
+        messages: [{ key: "key1", value: "Hello KafkaJS user!" }],
+      }).then(() => console.log("producer sent message"))
+      .catch((error) => console.error("producer send error --> ", error))
+
+    }catch(error){
+      console.error("producer error --> ", error)
+    }
+
   };
 
   const startConsumer = () => {};
@@ -156,3 +167,6 @@ const KafkaClient: FC = () => {
 };
 
 export default KafkaClient;
+    //send the event to the event stream
+    sendEventStream(event_name);
+    res.send([{ result: 
