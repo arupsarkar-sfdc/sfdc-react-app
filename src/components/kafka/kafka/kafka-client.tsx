@@ -52,14 +52,6 @@ const KafkaClient: FC = () => {
         //set the broker variable to the state variable broker
         setBroker(broker);
         try {
-          // //convert envData.kafka_trusted_cert to a buffer
-          // const kafkaCertBuffer = Buffer.from(
-          //   envData.kafka_trusted_cert,
-          //   "base64"
-          // );
-          // const kafkaCert = new X509Certificate(kafkaCertBuffer);
-
-          //create a kafkaconfig with SSL enables with kafkajs
           const kafkaConfig: KafkaConfig = {
             clientId: "my-app",
             brokers: [
@@ -76,17 +68,17 @@ const KafkaClient: FC = () => {
               ca: [envData.kafka_trusted_cert],
               cert: [envData.kafka_client_cert],
               key: [envData.kafka_client_cert_key],
-              checkServerIdentity(hostname, cert) {
-                console.log("KafkaClienthostname", hostname);
-                console.log("KafkaClientcert", cert);
-                //check the fingerprint
-                if (cert.fingerprint == envData.kafka_trusted_cert.fingerprint){
-                    console.log("KafkaClientfingerprint matched");
-                    return undefined;
-                }
-                //otherwise return an error
-                return new Error(`Server certificate for ${hostname} doesn't match!`);
-              },
+              // checkServerIdentity(hostname, cert) {
+              //   console.log("KafkaClienthostname", hostname);
+              //   console.log("KafkaClientcert", cert);
+              //   //check the fingerprint
+              //   if (cert.fingerprint == envData.kafka_trusted_cert.fingerprint){
+              //       console.log("KafkaClientfingerprint matched");
+              //       return undefined;
+              //   }
+              //   //otherwise return an error
+              //   return new Error(`Server certificate for ${hostname} doesn't match!`);
+              // },
             },
           };
           //set the kafkaConfig to the state variable kafkaConfig
