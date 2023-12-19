@@ -100,6 +100,23 @@ const KafkaClient: FC = () => {
 
   }
 
+  const startProducer = async () => {
+    const producer = kafka!.producer();
+    await producer.connect();
+    await producer.send({
+        topic: "datacloud-streaming-channel",
+        messages: [
+            { key: 'key1', value: "Hello KafkaJS user!" },
+        ],
+    })
+  }
+
+  const startConsumer = () => {
+
+  }
+
+
+
   console.log(menu);
   return (
     <div>
@@ -120,6 +137,22 @@ const KafkaClient: FC = () => {
               >
                 Initialize Kafka
               </Button>
+              <Button
+                onClick={startProducer}
+                size="small"
+                variant="contained"
+                sx={{ mt: 2 }}
+              >
+                Start Producer
+              </Button>
+              <Button
+                onClick={startConsumer}
+                size="small"
+                variant="contained"
+                sx={{ mt: 2 }}
+              >
+                Start Consumer
+              </Button>                            
             </Grid>
           </Grid>
         </Box>
