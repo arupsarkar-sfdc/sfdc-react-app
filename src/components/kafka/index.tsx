@@ -12,3 +12,5 @@ const KafkaHome: FC = () =>{
 }
 
 export default KafkaHome
+
+    
