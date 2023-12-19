@@ -57,11 +57,11 @@ const KafkaClient: FC = () => {
             brokers: [
               broker[0].replace(/kafka\+ssl:\/\//gi, ""),
               broker[1].replace(/kafka\+ssl:\/\//gi, ""),
+              broker[2].replace(/kafka\+ssl:\/\//gi, ""),
               broker[3].replace(/kafka\+ssl:\/\//gi, ""),
               broker[4].replace(/kafka\+ssl:\/\//gi, ""),
               broker[5].replace(/kafka\+ssl:\/\//gi, ""),
               broker[6].replace(/kafka\+ssl:\/\//gi, ""),
-              broker[7].replace(/kafka\+ssl:\/\//gi, ""),
             ],
             ssl: {
               rejectUnauthorized: false,
