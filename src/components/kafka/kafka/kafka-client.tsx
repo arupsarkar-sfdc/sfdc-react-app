@@ -28,12 +28,14 @@ const KafkaClient: FC = () => {
   const { menu } = useMenuGlobalContext();
   const [env, setEnv] = useState<envData | undefined>(undefined);
   //create a state variable for a string array
-    const [broker, setBroker] = useState<string[]>([]);
+  const [broker, setBroker] = useState<string[]>([]);
   //set kafkaConfig as useState variable
-  const [kafkaConfig, setKafkaConfig] = useState<KafkaConfig | undefined>(undefined);
+  const [kafkaConfig, setKafkaConfig] = useState<KafkaConfig | undefined>(
+    undefined
+  );
   const [kafka, setKafka] = useState<Kafka | undefined>(undefined);
 
-  const {X509Certificate} = require('crypto') 
+  const { X509Certificate } = require("crypto");
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
@@ -45,70 +47,53 @@ const KafkaClient: FC = () => {
         const envData: envData = data;
         // set the envData to the state variable env
         setEnv(envData);
-        //console log the envData
-        console.log("KafkaClientenvData", envData.kafka_url);
         //split the kafka_url having a delimiter of ',' and assign it to broker variable
         const broker = envData.kafka_url.split(",");
         //set the broker variable to the state variable broker
         setBroker(broker);
-        console.log("KafkaClientenvData", envData.kafka_client_cert);
-        //console output the all brokers
-        console.log("KafkaClientbroker 0 ", broker[0]);
-        console.log("KafkaClientbroker 1 ", broker[1]);        
-        console.log("KafkaClientbroker 2 ", broker[2]);                
-        console.log("KafkaClientbroker 3 ", broker[3]);      
-        try{
-            //make the input to X509Certificate a buffer of kafka trsuted cert
-            
-            //convert envData.kafka_trusted_cert to a buffer
-            const kafkaCertBuffer = Buffer.from(envData.kafka_trusted_cert, 'base64');
-            const kafkaCert = new X509Certificate(kafkaCertBuffer)
-            console.log("KafkaClientkafkaCert", kafkaCert);
-            console.log("KafkaClientkafkaCert.subject", kafkaCert.subject);
-            console.log("KafkaClientkafkaCert.issuer", kafkaCert.issuer);            
-        }catch(error) {
-            console.error("crypto error -> ", error)
-        }
-                         
+        try {
+          //convert envData.kafka_trusted_cert to a buffer
+          const kafkaCertBuffer = Buffer.from(
+            envData.kafka_trusted_cert,
+            "base64"
+          );
+          const kafkaCert = new X509Certificate(kafkaCertBuffer);
 
-        //create a kafkaconfig with SSL enables with kafkajs
-        const kafkaConfig: KafkaConfig = {
-          clientId: "my-app",
-          brokers: [broker[0].replace(/kafka\+ssl:\/\//gi, ""),
-                        broker[1].replace(/kafka\+ssl:\/\//gi, ""), 
-                        broker[3].replace(/kafka\+ssl:\/\//gi, ""), 
-                        broker[4].replace(/kafka\+ssl:\/\//gi, ""), 
-                        broker[5].replace(/kafka\+ssl:\/\//gi, ""), 
-                        broker[6].replace(/kafka\+ssl:\/\//gi, ""), 
-                        broker[7].replace(/kafka\+ssl:\/\//gi, "")
-                    ],
-          ssl: {
-            rejectUnauthorized: false,
-            ca: [envData.kafka_trusted_cert],
-            cert: [envData.kafka_client_cert],
-            key: [envData.kafka_client_cert_key],
-            checkServerIdentity(hostname, cert) {
+          //create a kafkaconfig with SSL enables with kafkajs
+          const kafkaConfig: KafkaConfig = {
+            clientId: "my-app",
+            brokers: [
+              broker[0].replace(/kafka\+ssl:\/\//gi, ""),
+              broker[1].replace(/kafka\+ssl:\/\//gi, ""),
+              broker[3].replace(/kafka\+ssl:\/\//gi, ""),
+              broker[4].replace(/kafka\+ssl:\/\//gi, ""),
+              broker[5].replace(/kafka\+ssl:\/\//gi, ""),
+              broker[6].replace(/kafka\+ssl:\/\//gi, ""),
+              broker[7].replace(/kafka\+ssl:\/\//gi, ""),
+            ],
+            ssl: {
+              rejectUnauthorized: false,
+              ca: [envData.kafka_trusted_cert],
+              cert: [envData.kafka_client_cert],
+              key: [envData.kafka_client_cert_key],
+              checkServerIdentity(hostname, cert) {
                 console.log("KafkaClienthostname", hostname);
                 console.log("KafkaClientcert", cert);
-                return undefined
-                // console.log("KafkaClientkafkaCert", kafkaCert);
-                // console.log("KafkaClientkafkaCert.subject", kafkaCert.subject);
-                // console.log("KafkaClientkafkaCert.issuer", kafkaCert.issuer);
-
-                // //check the fingerprint
-                // if (cert.fingerprint == kafkaCert.fingerprint){
-                //     console.log("KafkaClientfingerprint matched");
-                //     return undefined;
-                // }
-                // //otherwise return an error
-                // return new Error(`Server certificate for ${hostname} doesn't match!`);
-
+                //check the fingerprint
+                if (cert.fingerprint == kafkaCert.fingerprint){
+                    console.log("KafkaClientfingerprint matched");
+                    return undefined;
+                }
+                //otherwise return an error
+                return new Error(`Server certificate for ${hostname} doesn't match!`);
+              },
             },
-          },
-        };
-        //set the kafkaConfig to the state variable kafkaConfig
-        setKafkaConfig(kafkaConfig);
-
+          };
+          //set the kafkaConfig to the state variable kafkaConfig
+          setKafkaConfig(kafkaConfig);
+        } catch (error) {
+          console.error("crypto error -> ", error);
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -117,35 +102,27 @@ const KafkaClient: FC = () => {
 
   const submitToKafkaTopic = () => {
     console.log("submitToKafkaTopic");
-    console.log("env", env)
+    console.log("env", env);
     //create a kafka instance with a try catch block
-    try{
-        console.log("kafkaConfig", kafkaConfig)
-        const kafka = new Kafka(kafkaConfig!);
-        setKafka(kafka);
-    }catch(error){
-        console.error(error)
+    try {
+      console.log("kafkaConfig", kafkaConfig);
+      const kafka = new Kafka(kafkaConfig!);
+      setKafka(kafka);
+    } catch (error) {
+      console.error(error);
     }
-
-  }
+  };
 
   const startProducer = async () => {
-
     const producer = kafka!.producer();
     await producer.connect();
     await producer.send({
-        topic: "datacloud-streaming-channel",
-        messages: [
-            { key: 'key1', value: "Hello KafkaJS user!" },
-        ],
-    })
-  }
+      topic: "datacloud-streaming-channel",
+      messages: [{ key: "key1", value: "Hello KafkaJS user!" }],
+    });
+  };
 
-  const startConsumer = () => {
-
-  }
-
-
+  const startConsumer = () => {};
 
   console.log(menu);
   return (
@@ -182,7 +159,7 @@ const KafkaClient: FC = () => {
                 sx={{ mt: 2 }}
               >
                 Start Consumer
-              </Button>                            
+              </Button>
             </Grid>
           </Grid>
         </Box>
