@@ -34,7 +34,9 @@ module.exports = {
       "zlib": false,
       "net": false,
       "tls": false,
-      "assert": false
+      "assert": false,
+      "stream": require.resolve("stream-browserify"),
+      "buffer": require.resolve("buffer")      
     }
   },
   output: {
@@ -42,7 +44,16 @@ module.exports = {
     path: path.join(__dirname, "dist"),
     filename: "[name].js",
   }, // NEW Ends
-  plugins: [htmlWebPackPlugin, workBoxPlugin_Generate, processEnvPlugin],
+  plugins: [htmlWebPackPlugin, 
+            workBoxPlugin_Generate, 
+            processEnvPlugin,
+            new webpack.ProvidePlugin({
+              Buffer: ['buffer', 'Buffer'],
+            }),
+            new webpack.ProvidePlugin({
+              process: 'process/browser',
+            }),          
+          ],
   module: {
     rules: [
       {
