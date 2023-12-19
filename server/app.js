@@ -426,14 +426,14 @@ const checkx509Certificate = async () => {
     // // remove any trailing begining and end spaces from the cert
     // process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\s+/g, '');
 
-    console.log("trusted cert after ", process.env.KAFKA_TRUSTED_CERT)
+    // console.log("trusted cert after ", process.env.KAFKA_TRUSTED_CERT)
     const { X509Certificate } = require("crypto");
-    //convert envData.kafka_trusted_cert to a buffer
-    const kafkaCertBuffer = Buffer.from(
-      process.env.KAFKA_TRUSTED_CERT,
-        "base64"
-    );
-    const kafkaCert = new X509Certificate(kafkaCertBuffer);
+    // //convert envData.kafka_trusted_cert to a buffer
+    // const kafkaCertBuffer = Buffer.from(
+    //   process.env.KAFKA_TRUSTED_CERT,
+    //     "base64"
+    // );
+    const kafkaCert = new X509Certificate(process.env.KAFKA_TRUSTED_CERT);
     console.log("kafkaCert", kafkaCert.subject)
     return kafkaCert;
   }catch(error) {
