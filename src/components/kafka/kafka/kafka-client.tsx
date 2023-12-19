@@ -58,8 +58,11 @@ const KafkaClient: FC = () => {
         try{
             const crypto = require("crypto") 
             const kafkaCert = new crypto.X509Certificate(envData.kafka_trusted_cert)
+            console.log("KafkaClientkafkaCert", kafkaCert);
+            console.log("KafkaClientkafkaCert.subject", kafkaCert.subject);
+            console.log("KafkaClientkafkaCert.issuer", kafkaCert.issuer);            
         }catch(error) {
-
+            console.error("crypto error -> ", error)
         }
                          
 
