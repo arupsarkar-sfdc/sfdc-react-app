@@ -402,6 +402,10 @@ app.get('/api/change/event', async (req, res, next) => {
 
 /** provide environmenet variables to react components */
 app.get('/api/env', async (req, res) => {
+  console.log("trusted url", process.env.KAFKA_URL)
+  console.log("client cert", process.env.KAFKA_CLIENT_CERT)
+  console.log("trusted cert", process.env.KAFKA_TRUSTED_CERT)
+
   //get the trusted cert from checkx509Certificate function
   const kafkaCert = await checkx509Certificate();
   res.send({
@@ -414,14 +418,23 @@ app.get('/api/env', async (req, res) => {
 });
 
 const checkx509Certificate = async () => {
-  const { X509Certificate } = require("crypto");
-  //convert envData.kafka_trusted_cert to a buffer
-  const kafkaCertBuffer = Buffer.from(
-    process.env.KAFKA_TRUSTED_CERT,
-      "base64"
-  );
-  const kafkaCert = new X509Certificate(kafkaCertBuffer);
+
+  try{
+    console.log("inside checkx509Certificate")
+
+    const { X509Certificate } = require("crypto");
+    //convert envData.kafka_trusted_cert to a buffer
+    const kafkaCertBuffer = Buffer.from(
+      process.env.KAFKA_TRUSTED_CERT,
+        "base64"
+    );
+    const kafkaCert = new X509Certificate(kafkaCertBuffer);
+    console.log("kafkaCert", kafkaCert.subject)
     return kafkaCert;
+  }catch(error) {
+    console.log("checkx509Certificate error ---> ", error)
+  }
+
 
 }
 app.get('/unifiedprofile', (req, res) => {
