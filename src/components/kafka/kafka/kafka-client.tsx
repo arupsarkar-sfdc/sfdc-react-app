@@ -16,6 +16,8 @@ const KafkaClient: FC = () => {
 
     const { menu } = useMenuGlobalContext();
     const [env, setEnv] = useState<envData | undefined>(undefined);
+    //set kafkaConfig as useState variable
+    const [kafkaConfig, setKafkaConfig] = useState<KafkaConfig | undefined>(undefined);
     // create a kafka config with TLS enabled
     // const kafkaConfig: KafkaConfig = ({
     //     clientId: 'my-app',
@@ -46,7 +48,19 @@ const KafkaClient: FC = () => {
                 //console log the envData
                 console.log("KafkaClientenvData", envData.kafka_url)
                 console.log("KafkaClientenvData", envData.kafka_client_cert)
-
+                //create a kafkaconfig with SSL enables with kafkajs
+                const kafkaConfig: KafkaConfig = ({
+                    clientId: 'my-app',
+                    brokers: [envData.kafka_url],
+                    ssl: {
+                        rejectUnauthorized: false,
+                        ca: [envData.kafka_client_cert],
+                        cert: [envData.kafka_trusted_cert],
+                        key: [envData.kafka_client_cert_key]
+                    }
+                })
+                //set the kafkaConfig to the state variable kafkaConfig
+                setKafkaConfig(kafkaConfig)
             })
             .catch(error => {
                 console.error(error)
