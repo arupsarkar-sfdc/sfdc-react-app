@@ -28,9 +28,7 @@ const KafkaClient: FC = () => {
   const { menu } = useMenuGlobalContext();
   const [env, setEnv] = useState<envData | undefined>(undefined);
   //set kafkaConfig as useState variable
-  const [kafkaConfig, setKafkaConfig] = useState<KafkaConfig | undefined>(
-    undefined
-  );
+  const [kafkaConfig, setKafkaConfig] = useState<KafkaConfig | undefined>(undefined);
   // create a kafka config with TLS enabled
   // const kafkaConfig: KafkaConfig = ({
   //     clientId: 'my-app',
