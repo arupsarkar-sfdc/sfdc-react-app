@@ -54,7 +54,10 @@ const KafkaClient: FC = () => {
         console.log("KafkaClientbroker 0 ", broker[0]);
         console.log("KafkaClientbroker 1 ", broker[1]);        
         console.log("KafkaClientbroker 2 ", broker[2]);                
-        console.log("KafkaClientbroker 3 ", broker[3]);                        
+        console.log("KafkaClientbroker 3 ", broker[3]);      
+        
+        const crypto = require("crypto") 
+        const kafkaCert = new crypto.X509Certificate(envData.kafka_trusted_cert)                         
 
         //create a kafkaconfig with SSL enables with kafkajs
         const kafkaConfig: KafkaConfig = {
@@ -72,9 +75,22 @@ const KafkaClient: FC = () => {
             ca: [envData.kafka_trusted_cert],
             cert: [envData.kafka_client_cert],
             key: [envData.kafka_client_cert_key],
-            // checkServerIdentity: (host, cert) => {
-            //     return undefined
-            // },
+            checkServerIdentity(hostname, cert) {
+                console.log("KafkaClienthostname", hostname);
+                console.log("KafkaClientcert", cert);
+                console.log("KafkaClientkafkaCert", kafkaCert);
+                console.log("KafkaClientkafkaCert.subject", kafkaCert.subject);
+                console.log("KafkaClientkafkaCert.issuer", kafkaCert.issuer);
+
+                //check the fingerprint
+                if (cert.fingerprint == kafkaCert.fingerprint){
+                    console.log("KafkaClientfingerprint matched");
+                    return undefined;
+                }
+                //otherwise return an error
+                return new Error(`Server certificate for ${hostname} doesn't match!`);
+
+            },
           },
         };
         //set the kafkaConfig to the state variable kafkaConfig
@@ -101,6 +117,7 @@ const KafkaClient: FC = () => {
   }
 
   const startProducer = async () => {
+
     const producer = kafka!.producer();
     await producer.connect();
     await producer.send({
