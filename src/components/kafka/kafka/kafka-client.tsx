@@ -29,6 +29,7 @@ const KafkaClient: FC = () => {
   const [env, setEnv] = useState<envData | undefined>(undefined);
   //set kafkaConfig as useState variable
   const [kafkaConfig, setKafkaConfig] = useState<KafkaConfig | undefined>(undefined);
+  const [kafka, setKafka] = useState<Kafka | undefined>(undefined);
   // create a kafka config with TLS enabled
   // const kafkaConfig: KafkaConfig = ({
   //     clientId: 'my-app',
@@ -71,6 +72,7 @@ const KafkaClient: FC = () => {
         };
         //set the kafkaConfig to the state variable kafkaConfig
         setKafkaConfig(kafkaConfig);
+
       })
       .catch((error) => {
         console.error(error);
@@ -79,13 +81,16 @@ const KafkaClient: FC = () => {
 
   const submitToKafkaTopic = () => {
     console.log("submitToKafkaTopic");
-    console.log("kafkaConfig", kafkaConfig)
     console.log("env", env)
-    //create a kafka instance
-    if (kafkaConfig) {
-        const kafka = new Kafka(kafkaConfig);
-        console.log("kafka", kafka)
+    //create a kafka instance with a try catch block
+    try{
+        console.log("kafkaConfig", kafkaConfig)
+        // const kafka = new Kafka(kafkaConfig!);
+        // setKafka(kafka);
+    }catch(error){
+        console.error(error)
     }
+
   }
 
   console.log(menu);
@@ -97,6 +102,7 @@ const KafkaClient: FC = () => {
             <Grid xs={8}>
               <InputLabel variant="standard" htmlFor="uncontrolled-native">
                 Kafka Message Streaming
+                {new Date().toLocaleString()}
               </InputLabel>
 
               <Button
@@ -105,7 +111,7 @@ const KafkaClient: FC = () => {
                 variant="contained"
                 sx={{ mt: 2 }}
               >
-                Submit
+                Initialize Kafka
               </Button>
             </Grid>
           </Grid>
