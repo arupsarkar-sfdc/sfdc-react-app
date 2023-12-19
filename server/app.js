@@ -401,16 +401,29 @@ app.get('/api/change/event', async (req, res, next) => {
 /** Change Data Capture - End */
 
 /** provide environmenet variables to react components */
-app.get('/api/env', (req, res) => {
+app.get('/api/env', async (req, res) => {
+  //get the trusted cert from checkx509Certificate function
+  const kafkaCert = await checkx509Certificate();
   res.send({
     kafka_url: process.env.KAFKA_URL,
     kafka_client_cert: process.env.KAFKA_CLIENT_CERT,
     kafka_client_cert_key: process.env.KAFKA_CLIENT_CERT_KEY,
-    kafka_trusted_cert: process.env.KAFKA_TRUSTED_CERT,
+    //kafka_trusted_cert: process.env.KAFKA_TRUSTED_CERT,
+    kafka_trusted_cert: kafkaCert,
   });
 });
 
+const checkx509Certificate = async () => {
+  const { X509Certificate } = require("crypto");
+  //convert envData.kafka_trusted_cert to a buffer
+  const kafkaCertBuffer = Buffer.from(
+    process.env.KAFKA_TRUSTED_CERT,
+      "base64"
+  );
+  const kafkaCert = new X509Certificate(kafkaCertBuffer);
+    return kafkaCert;
 
+}
 app.get('/unifiedprofile', (req, res) => {
   const unified_id = req.query.unifiedid;
   console.log(unified_id)

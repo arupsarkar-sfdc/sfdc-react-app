@@ -20,7 +20,7 @@ import {
 interface envData {
   kafka_client_cert: string;
   kafka_client_cert_key: string;
-  kafka_trusted_cert: string;
+  kafka_trusted_cert: any;
   kafka_url: string;
 }
 
@@ -35,7 +35,7 @@ const KafkaClient: FC = () => {
   );
   const [kafka, setKafka] = useState<Kafka | undefined>(undefined);
 
-  const { X509Certificate } = require("crypto");
+  // const { X509Certificate } = require("crypto");
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
@@ -52,12 +52,12 @@ const KafkaClient: FC = () => {
         //set the broker variable to the state variable broker
         setBroker(broker);
         try {
-          //convert envData.kafka_trusted_cert to a buffer
-          const kafkaCertBuffer = Buffer.from(
-            envData.kafka_trusted_cert,
-            "base64"
-          );
-          const kafkaCert = new X509Certificate(kafkaCertBuffer);
+          // //convert envData.kafka_trusted_cert to a buffer
+          // const kafkaCertBuffer = Buffer.from(
+          //   envData.kafka_trusted_cert,
+          //   "base64"
+          // );
+          // const kafkaCert = new X509Certificate(kafkaCertBuffer);
 
           //create a kafkaconfig with SSL enables with kafkajs
           const kafkaConfig: KafkaConfig = {
@@ -80,7 +80,7 @@ const KafkaClient: FC = () => {
                 console.log("KafkaClienthostname", hostname);
                 console.log("KafkaClientcert", cert);
                 //check the fingerprint
-                if (cert.fingerprint == kafkaCert.fingerprint){
+                if (cert.fingerprint == envData.kafka_trusted_cert.fingerprint){
                     console.log("KafkaClientfingerprint matched");
                     return undefined;
                 }
