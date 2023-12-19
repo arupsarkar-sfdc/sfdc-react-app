@@ -34,6 +34,8 @@ const KafkaClient: FC = () => {
     undefined
   );
   const [kafka, setKafka] = useState<Kafka | undefined>(undefined);
+  //define a array string variable
+  const kafkaBroker: string[] = [];
 
   // const { X509Certificate } = require("crypto");
 
@@ -47,36 +49,29 @@ const KafkaClient: FC = () => {
         const envData: envData = data;
         // set the envData to the state variable env
         setEnv(envData);
-        //split the kafka_url having a delimiter of ',' and assign it to broker variable
+        
+        //split the kafka_url having a delimiter of ',' and assign it to broker array variable
         const brokerArray = envData.kafka_url.split(",");
         //iterate the string array and replace the kafka+ssl:// with empty string
         for (let i = 0; i < brokerArray.length; i++) {
           brokerArray[i] = brokerArray[i].replace(/kafka\+ssl:\/\//gi, "");
+          //push the brokerArray to kafkaBroker array
+          kafkaBroker.push(brokerArray[i]);
         }
         //set the broker variable to the state variable broker
-        setBroker(brokerArray);
+        setBroker(kafkaBroker);
+        console.log("brokerArray", kafkaBroker[0]);
         try {
           const kafkaConfig: KafkaConfig = {
             clientId: "my-app",
             brokers: [
-              broker[0]
+              kafkaBroker[0]
             ],
             ssl: {
               rejectUnauthorized: false,
               ca: [envData.kafka_trusted_cert],
               cert: [envData.kafka_client_cert],
               key: [envData.kafka_client_cert_key],
-              // checkServerIdentity(hostname, cert) {
-              //   console.log("KafkaClienthostname", hostname);
-              //   console.log("KafkaClientcert", cert);
-              //   //check the fingerprint
-              //   if (cert.fingerprint == envData.kafka_trusted_cert.fingerprint){
-              //       console.log("KafkaClientfingerprint matched");
-              //       return undefined;
-              //   }
-              //   //otherwise return an error
-              //   return new Error(`Server certificate for ${hostname} doesn't match!`);
-              // },
             },
           };
           //set the kafkaConfig to the state variable kafkaConfig
