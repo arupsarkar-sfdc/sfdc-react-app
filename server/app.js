@@ -421,7 +421,9 @@ const checkx509Certificate = async () => {
 
   try{
     console.log("inside checkx509Certificate")
-
+    //replace all \n with no space in process.env.KAFKA_TRUSTED_CERT
+    process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\n/g, '');
+    console.log("process.env.KAFKA_TRUSTED_CERT", process.env.KAFKA_TRUSTED_CERT)
     const { X509Certificate } = require("crypto");
     //convert envData.kafka_trusted_cert to a buffer
     const kafkaCertBuffer = Buffer.from(
