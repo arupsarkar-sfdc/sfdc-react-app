@@ -400,6 +400,17 @@ app.get('/api/change/event', async (req, res, next) => {
 })
 /** Change Data Capture - End */
 
+/** provide environmenet variables to react components */
+app.get('/api/env', (req, res) => {
+  res.send({
+    kafka_url: process.env.KAFKA_URL,
+    kafka_client_cert: process.env.KAFKA_CLIENT_CERT,
+    kafka_client_cert_key: process.env.KAFKA_CLIENT_CERT_KEY,
+    kafka_trusted_cert: process.env.KAFKA_TRUSTED_CERT,
+  });
+});
+
+
 app.get('/unifiedprofile', (req, res) => {
   const unified_id = req.query.unifiedid;
   console.log(unified_id)
