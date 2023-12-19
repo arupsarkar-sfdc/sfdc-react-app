@@ -167,6 +167,3 @@ const KafkaClient: FC = () => {
 };
 
 export default KafkaClient;
-    //send the event to the event stream
-    sendEventStream(event_name);
-    res.send([{ result: 
