@@ -404,7 +404,7 @@ app.get('/api/change/event', async (req, res, next) => {
 app.get('/api/env', async (req, res) => {
   console.log("trusted url", process.env.KAFKA_URL)
   console.log("client cert", process.env.KAFKA_CLIENT_CERT)
-  console.log("trusted cert", process.env.KAFKA_TRUSTED_CERT)
+  console.log("trusted cert before", process.env.KAFKA_TRUSTED_CERT)
 
   //get the trusted cert from checkx509Certificate function
   const kafkaCert = await checkx509Certificate();
@@ -423,7 +423,10 @@ const checkx509Certificate = async () => {
     console.log("inside checkx509Certificate")
     //replace all \n with no space in process.env.KAFKA_TRUSTED_CERT
     process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\n/g, '');
-    console.log("process.env.KAFKA_TRUSTED_CERT", process.env.KAFKA_TRUSTED_CERT)
+    // remove any trailing begining and end spaces from the cert
+    process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\s+/g, '');
+
+    console.log("trusted cert after ", process.env.KAFKA_TRUSTED_CERT)
     const { X509Certificate } = require("crypto");
     //convert envData.kafka_trusted_cert to a buffer
     const kafkaCertBuffer = Buffer.from(
