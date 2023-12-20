@@ -147,7 +147,7 @@ const setupKafka = async () => {
             ],
             ssl: {
               // rejectUnauthorized: true,
-              ca: [kafkaTrustedCert],
+              ca: kafkaTrustedCert,
               cert: process.env.KAFKA_CLIENT_CERT,
               key: process.env.KAFKA_CLIENT_CERT_KEY,
               checkServerIdentity(hostname, cert) {
