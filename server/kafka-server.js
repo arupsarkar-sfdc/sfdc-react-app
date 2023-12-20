@@ -49,7 +49,11 @@ const startConsumer = async (req, res) => {
               console.log({
                 partition,
                 offset: message.offset,
+                key: message.key.toString(),
                 value: message.value.toString(),
+                headers: message.headers,
+                timestamp: message.timestamp,
+                topic: topic,
               })
             },
           }).then((data) => {
@@ -146,11 +150,23 @@ const setupKafka = async () => {
         console.log("kafkaBroker 0", kafkaBroker[0]);
         console.log("kafkaBroker 1", kafkaBroker[1]);
         console.log("kafkaBroker 2", kafkaBroker[2]);
+        console.log("kafkaBroker 3", kafkaBroker[3]);
+        console.log("kafkaBroker 4", kafkaBroker[4]);
+        console.log("kafkaBroker 5", kafkaBroker[5]);
+        console.log("kafkaBroker 6", kafkaBroker[6]);        
+        console.log("kafkaBroker 7", kafkaBroker[7]);        
 
         const herokuKafka = new Kafka({
             clientId: "my-app",
             brokers: [
-              kafkaBroker[0]
+              kafkaBroker[0],
+              kafkaBroker[1],
+              kafkaBroker[2],
+              kafkaBroker[3],
+              kafkaBroker[4],
+              kafkaBroker[5],
+              kafkaBroker[6],
+              kafkaBroker[7], 
             ],
             ssl: {
               rejectUnauthorized: false,
