@@ -102,6 +102,8 @@ const KafkaClient: FC = () => {
 
   const startProducer = async () => {
     try{
+      console.log("start producer - kafka ", kafka)
+
       const producer = kafka!.producer();
       console.log("producer", producer);
       await producer.connect()
