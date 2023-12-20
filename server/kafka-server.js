@@ -207,15 +207,18 @@ const setupKafka = async () => {
 
         const herokuKafka = new Kafka({
             clientId: "my-app",
+            consumer: {
+              groupId: 'my-app',
+            },
             brokers: [
               kafkaBroker[0],
-              // kafkaBroker[1],
-              // kafkaBroker[2],
-              // kafkaBroker[3],
-              // kafkaBroker[4],
-              // kafkaBroker[5],
-              // kafkaBroker[6],
-              // kafkaBroker[7], 
+              kafkaBroker[1],
+              kafkaBroker[2],
+              kafkaBroker[3],
+              kafkaBroker[4],
+              kafkaBroker[5],
+              kafkaBroker[6],
+              kafkaBroker[7], 
             ],
             ssl: {
               rejectUnauthorized: false,
