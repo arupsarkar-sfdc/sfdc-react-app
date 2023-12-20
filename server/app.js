@@ -400,48 +400,47 @@ app.get('/api/change/event', async (req, res, next) => {
 })
 /** Change Data Capture - End */
 
-/** provide environmenet variables to react components */
-app.get('/api/env', async (req, res) => {
-  console.log("trusted url", process.env.KAFKA_URL)
-  console.log("client cert", process.env.KAFKA_CLIENT_CERT)
-  console.log("trusted cert before", process.env.KAFKA_TRUSTED_CERT)
+// /** provide environmenet variables to react components */
+// app.get('/api/env', async (req, res) => {
+//   console.log("trusted url", process.env.KAFKA_URL)
+//   console.log("client cert", process.env.KAFKA_CLIENT_CERT)
+//   console.log("trusted cert before", process.env.KAFKA_TRUSTED_CERT)
 
-  //get the trusted cert from checkx509Certificate function
-  const kafkaCert = await checkx509Certificate();
-  res.send({
-    kafka_url: process.env.KAFKA_URL,
-    kafka_client_cert: process.env.KAFKA_CLIENT_CERT,
-    kafka_client_cert_key: process.env.KAFKA_CLIENT_CERT_KEY,
-    //kafka_trusted_cert: process.env.KAFKA_TRUSTED_CERT,
-    kafka_trusted_cert: kafkaCert,
-  });
-});
+//   //get the trusted cert from checkx509Certificate function
+//   const kafkaCert = await checkx509Certificate();
+//   res.send({
+//     kafka_url: process.env.KAFKA_URL,
+//     kafka_client_cert: process.env.KAFKA_CLIENT_CERT,
+//     kafka_client_cert_key: process.env.KAFKA_CLIENT_CERT_KEY,
+//     //kafka_trusted_cert: process.env.KAFKA_TRUSTED_CERT,
+//     kafka_trusted_cert: kafkaCert,
+//   });
+// });
 
-const checkx509Certificate = async () => {
+// const checkx509Certificate = async () => {
+//   try{
+//     console.log("inside checkx509Certificate")
+//     //replace all \n with no space in process.env.KAFKA_TRUSTED_CERT
+//     process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\\n/gm, '\n')
+//     // // remove any trailing begining and end spaces from the cert
+//     // process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\s+/g, '');
 
-  try{
-    console.log("inside checkx509Certificate")
-    //replace all \n with no space in process.env.KAFKA_TRUSTED_CERT
-    process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\\n/gm, '\n')
-    // // remove any trailing begining and end spaces from the cert
-    // process.env.KAFKA_TRUSTED_CERT = process.env.KAFKA_TRUSTED_CERT.replace(/\s+/g, '');
-
-    // console.log("trusted cert after ", process.env.KAFKA_TRUSTED_CERT)
-    const { X509Certificate } = require("crypto");
-    // //convert envData.kafka_trusted_cert to a buffer
-    // const kafkaCertBuffer = Buffer.from(
-    //   process.env.KAFKA_TRUSTED_CERT,
-    //     "base64"
-    // );
-    const kafkaCert = new X509Certificate(process.env.KAFKA_TRUSTED_CERT);
-    console.log("kafkaCert", kafkaCert.subject)
-    return kafkaCert;
-  }catch(error) {
-    console.log("checkx509Certificate error ---> ", error)
-  }
+//     // console.log("trusted cert after ", process.env.KAFKA_TRUSTED_CERT)
+//     const { X509Certificate } = require("crypto");
+//     // //convert envData.kafka_trusted_cert to a buffer
+//     // const kafkaCertBuffer = Buffer.from(
+//     //   process.env.KAFKA_TRUSTED_CERT,
+//     //     "base64"
+//     // );
+//     const kafkaCert = new X509Certificate(process.env.KAFKA_TRUSTED_CERT);
+//     console.log("kafkaCert", kafkaCert.subject)
+//     return kafkaCert;
+//   }catch(error) {
+//     console.log("checkx509Certificate error ---> ", error)
+//   }
+// }
 
 
-}
 app.get('/unifiedprofile', (req, res) => {
   const unified_id = req.query.unifiedid;
   console.log(unified_id)

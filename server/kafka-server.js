@@ -146,22 +146,23 @@ const setupKafka = async () => {
               kafkaBroker[0]
             ],
             ssl: {
-              // rejectUnauthorized: true,
-              ca: kafkaTrustedCert,
+              rejectUnauthorized: false,
+              //ca: kafkaTrustedCert,
+              ca: process.env.KAFKA_TRUSTED_CERT,
               cert: process.env.KAFKA_CLIENT_CERT,
               key: process.env.KAFKA_CLIENT_CERT_KEY,
-              checkServerIdentity(hostname, cert) {
-                  console.log("hostname", hostname);
-                  console.log("cert", cert);
-                  if(cert.fingerprint === kafkaTrustedCert.fingerprint) {
-                    console.log("cert matched");
-                    return undefined;
-                  } else {
-                    console.log("cert not matched");
-                    return new Error(`Server certificate does not match trusted certificate`);
-                  }
+              // checkServerIdentity(hostname, cert) {
+              //     console.log("hostname", hostname);
+              //     console.log("cert", cert);
+              //     if(cert.fingerprint === kafkaTrustedCert.fingerprint) {
+              //       console.log("cert matched");
+              //       return undefined;
+              //     } else {
+              //       console.log("cert not matched");
+              //       return new Error(`Server certificate does not match trusted certificate`);
+              //     }
                     
-              },
+              // },
             },
         })
         return herokuKafka;
