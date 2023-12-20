@@ -8,13 +8,6 @@ console.log("trusted url", process.env.KAFKA_URL)
 console.log("client cert", process.env.KAFKA_CLIENT_CERT)
 console.log("trusted cert before", process.env.KAFKA_TRUSTED_CERT)
 
-//create a function and module.export it so that I can reference it in app.js
-module.exports = {
-    startConsumer: startConsumer,
-    stopConsumer: stopConsumer,
-    startProducer: startProducer,
-    stopProducer: stopProducer
-}
 
 //get the trusted cert from checkx509Certificate function
 const checkx509Certificate = async () => {
@@ -156,4 +149,13 @@ const setupKafka = async () => {
     }catch(error) {
         console.error("Error creating kafka config", error)
     }
+}
+
+
+//create a function and module.export it so that I can reference it in app.js
+module.exports = {
+  startConsumer: startConsumer,
+  stopConsumer: stopConsumer,
+  startProducer: startProducer,
+  stopProducer: stopProducer
 }
