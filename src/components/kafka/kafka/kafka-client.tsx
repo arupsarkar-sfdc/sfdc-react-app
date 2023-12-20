@@ -41,62 +41,13 @@ const KafkaClient: FC = () => {
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
-    fetch("/api/env")
-      .then((response) => response.json())
+    fetch("/api/kafka/startProducer")
+      .then((res) => res.json())
       .then((data) => {
-        console.log("KafkaClientenv variables", data);
-        // parse the data and set it to envData interface variable
-        const envData: envData = data;
-        // set the envData to the state variable env
-        setEnv(envData);
-        
-        //split the kafka_url having a delimiter of ',' and assign it to broker array variable
-        const brokerArray = envData.kafka_url.split(",");
-        //iterate the string array and replace the kafka+ssl:// with empty string
-        for (let i = 0; i < brokerArray.length; i++) {
-          brokerArray[i] = brokerArray[i].replace(/kafka\+ssl:\/\//gi, "");
-          //push the brokerArray to kafkaBroker array
-          kafkaBroker.push(brokerArray[i]);
-        }
-        //set the broker variable to the state variable broker
-        setBroker(kafkaBroker);
-        console.log("brokerArray 0", kafkaBroker[0]);
-        console.log("brokerArray 1", kafkaBroker[1]);
-        console.log("brokerArray 2", kafkaBroker[2]);
-        try {
-          const kafkaConfig: KafkaConfig = {
-            clientId: "my-app",
-            brokers: [
-              kafkaBroker[0], kafkaBroker[1], kafkaBroker[2]
-            ],
-            ssl: {
-              // rejectUnauthorized: true,
-              ca: [envData.kafka_trusted_cert],
-              cert: envData.kafka_client_cert,
-              key: envData.kafka_client_cert_key,
-              checkServerIdentity(hostname, cert) {
-                  console.log("hostname", hostname);
-                  console.log("cert", cert);
-                  if(cert.fingerprint === envData.kafka_trusted_cert.fingerprint) {
-                    console.log("cert matched");
-                    return undefined;
-                  } else {
-                    console.log("cert not matched");
-                    return new Error(`Server certificate does not match trusted certificate`);
-                  }
-                    
-              },
-            },
-          };
-          //set the kafkaConfig to the state variable kafkaConfig
-          setKafkaConfig(kafkaConfig);
-        } catch (error) {
-          console.error("crypto error -> ", error);
-        }
+        console.log("data", data);
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => console.error(error));
+
   }, []);
 
   const initializeKafka = () => {

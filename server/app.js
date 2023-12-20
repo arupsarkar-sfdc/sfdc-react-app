@@ -453,6 +453,43 @@ app.get('/unifiedprofile', (req, res) => {
     res.send(result.rows);
   });
 });
+//kafka orchestration api end points - START
+const kafka = require('./kafka-server');
+app.get("/api/kafka/startProducer", async (req, res) => {
+  try{
+    await kafka.startProducer();
+    res.status(200).send("Producer started");
+  }catch(error) {
+    res.status(500).send("Error starting producer");
+  
+  }
+})
+app.get("/api/kafka/stopProducer", async (req, res) => {
+  try{
+    await kafka.stopProducer();
+    res.status(200).send("Producer stopped");
+  }catch(error) {
+    res.status(500).send("Error stopping producer");
+  }
+})
+  
+app.get("/api/kafka/startConsumer", async (req, res) => {
+  try{
+    await kafka.startConsumer();
+    res.status(200).send("Consumer started");
+  }catch(error) {
+    res.status(500).send("Error starting consumer");
+  }
+})
+app.get("/api/kafka/stopConsumer", async (req, res) => {
+  try{
+    await kafka.stopConsumer();
+    res.status(200).send("Consumer stopped");
+  }catch(error) {
+    res.status(500).send("Error stopping consumer");
+  }
+})
+//kafka orchestration api end points - END
 
 app.listen(port, function () {
   logger.info(`App listening on port: ${port}`);
