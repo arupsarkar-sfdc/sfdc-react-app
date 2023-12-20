@@ -70,7 +70,7 @@ const KafkaClient: FC = () => {
               kafkaBroker[0], kafkaBroker[1], kafkaBroker[2]
             ],
             ssl: {
-              rejectUnauthorized: false,
+              rejectUnauthorized: true,
               ca: [envData.kafka_trusted_cert],
               cert: [envData.kafka_client_cert],
               key: [envData.kafka_client_cert_key],
