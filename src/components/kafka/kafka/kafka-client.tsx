@@ -77,10 +77,14 @@ const KafkaClient: FC = () => {
               checkServerIdentity(hostname, cert) {
                   console.log("hostname", hostname);
                   console.log("cert", cert);
-                  if(cert.fingerprint === envData.kafka_trusted_cert.fingerprint)
+                  if(cert.fingerprint === envData.kafka_trusted_cert.fingerprint) {
+                    console.log("cert matched");
                     return undefined;
-                  else
+                  } else {
+                    console.log("cert not matched");
                     return new Error(`Server certificate does not match trusted certificate`);
+                  }
+                    
               },
             },
           };
@@ -95,7 +99,7 @@ const KafkaClient: FC = () => {
       });
   }, []);
 
-  const submitToKafkaTopic = () => {
+  const initializeKafka = () => {
     console.log("submitToKafkaTopic");
     console.log("env", env);
     //create a kafka instance with a try catch block
@@ -145,7 +149,7 @@ const KafkaClient: FC = () => {
               </InputLabel>
 
               <Button
-                onClick={submitToKafkaTopic}
+                onClick={initializeKafka}
                 size="small"
                 variant="contained"
                 sx={{ mt: 2 }}
