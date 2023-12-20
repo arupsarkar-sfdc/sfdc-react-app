@@ -60,12 +60,14 @@ const KafkaClient: FC = () => {
         }
         //set the broker variable to the state variable broker
         setBroker(kafkaBroker);
-        console.log("brokerArray", kafkaBroker[0]);
+        console.log("brokerArray 0", kafkaBroker[0]);
+        console.log("brokerArray 1", kafkaBroker[1]);
+        console.log("brokerArray 2", kafkaBroker[2]);
         try {
           const kafkaConfig: KafkaConfig = {
             clientId: "my-app",
             brokers: [
-              broker[0], broker[1], broker[2]
+              kafkaBroker[0], kafkaBroker[1], kafkaBroker[2]
             ],
             ssl: {
               rejectUnauthorized: false,
