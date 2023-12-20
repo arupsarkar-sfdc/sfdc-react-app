@@ -69,13 +69,20 @@ const KafkaClient: FC = () => {
             brokers: [
               kafkaBroker[0], kafkaBroker[1], kafkaBroker[2]
             ],
-            ssl: true,
-            // ssl: {
-            //   rejectUnauthorized: true,
-            //   ca: [envData.kafka_trusted_cert],
-            //   cert: [envData.kafka_client_cert],
-            //   key: [envData.kafka_client_cert_key],
-            // },
+            ssl: {
+              // rejectUnauthorized: true,
+              ca: [envData.kafka_trusted_cert],
+              cert: envData.kafka_client_cert,
+              key: envData.kafka_client_cert_key,
+              checkServerIdentity(hostname, cert) {
+                  console.log("hostname", hostname);
+                  console.log("cert", cert);
+                  if(cert.fingerprint === envData.kafka_trusted_cert.fingerprint)
+                    return undefined;
+                  else
+                    return new Error(`Server certificate does not match trusted certificate`);
+              },
+            },
           };
           //set the kafkaConfig to the state variable kafkaConfig
           setKafkaConfig(kafkaConfig);
