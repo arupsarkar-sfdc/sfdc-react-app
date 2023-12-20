@@ -40,7 +40,7 @@ const checkx509Certificate = async () => {
 const startConsumer = async (req, res) => {
     try{
         const kafka = await setupKafka();
-        const consumer = kafka.consumer({ groupId: 'test-group' });
+        const consumer = kafka.consumer({ groupId: 'my-app' });
         await consumer.connect();
         console.log("consumer connected");
         await consumer.subscribe({ topic: 'pearl-3815.datacloud-streaming-channel', fromBeginning: true });
@@ -52,7 +52,13 @@ const startConsumer = async (req, res) => {
                 value: message.value.toString(),
               })
             },
+          }).then((data) => {
+            console.log("consumer run data", data);
           })
+          .catch((error) => {
+            console.log("consumer run error", error);
+          })
+
     }catch(error) {
         console.error("Error starting consumer", error)
     }
@@ -86,7 +92,8 @@ const startProducer = async (req, res) => {
         await producer.send({
             topic: 'pearl-3815.datacloud-streaming-channel',
             messages: [
-              { value: 'Hello KafkaJS user!' },
+              //attach a todays date with locale to the message
+              { ket: "key 1", value: new Date().toLocaleString() + ' Hello KafkaJS user!' },
             ],
           })
           .then((data) => {
