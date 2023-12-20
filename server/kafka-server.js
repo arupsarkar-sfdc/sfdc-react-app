@@ -50,22 +50,54 @@ const startConsumer = async (req, res) => {
         const topicMetadata = await admin.fetchTopicMetadata({ topics: ['pearl-3815.datacloud-streaming-channel'] });
         console.log("topicMetadata", topicMetadata);
 
-        const consumer = kafka.consumer({ groupId: 'my-app', partitionAssigners: [({ cluster }) =>
-          {
-            console.log("cluster", cluster);
-            return async ({ topic, partitions: partitionMetadata, groupId }) =>
-            {
-              console.log("topic", topic);
-              console.log("partitionMetadata", partitionMetadata);
-              console.log("groupId", groupId);
-              return partitionMetadata.map((partition) => ({
-                topic,
-                partition: partition.partitionId,
-                //offset: partitionMetadata.partitionId,
-              }));
-            };
-          }
+
+        //create a consumer with force permission on the group coordinator
+        const consumer = kafka.consumer({ groupId: 'my-app', 
+              allowAutoTopicCreation: true, 
+              maxBytesPerPartition: 1000000, 
+              maxBytes: 1000000, 
+              maxWaitTimeInMs: 1000, 
+              minBytes: 1, 
+              retry: { retries: 5 }, 
+              sessionTimeout: 90000, 
+              heartbeatInterval: 30000, 
+              partitionAssigners: [({ cluster }) => {
+                console.log("cluster", cluster);
+                return async ({ topic, partitions: partitionMetadata, groupId }) => {
+                  console.log("topic", topic);
+                  console.log("partitionMetadata", partitionMetadata);
+                  console.log("groupId", groupId);
+                  return partitionMetadata.map((partition) => ({
+                    topic,
+                    partition: partition.partitionId,
+                    //offset: partitionMetadata.partitionId,
+                  }));
+                }
+              }
         ]});
+
+        
+
+
+        
+
+
+        // const consumer = kafka.consumer({ groupId: 'my-app', partitionAssigners: [({ cluster }) =>
+        //   {
+        //     console.log("cluster", cluster);
+        //     return async ({ topic, partitions: partitionMetadata, groupId }) =>
+        //     {
+        //       console.log("topic", topic);
+        //       console.log("partitionMetadata", partitionMetadata);
+        //       console.log("groupId", groupId);
+        //       return partitionMetadata.map((partition) => ({
+        //         topic,
+        //         partition: partition.partitionId,
+        //         //offset: partitionMetadata.partitionId,
+        //       }));
+        //     };
+        //   }
+        // ]});
 
         await consumer.connect();
         console.log("consumer connected");
