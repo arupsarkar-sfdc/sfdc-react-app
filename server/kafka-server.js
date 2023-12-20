@@ -66,7 +66,7 @@ const startConsumer = async (req, res) => {
             };
           }
         ]});
-        
+
         await consumer.connect();
         console.log("consumer connected");
         await consumer.subscribe({ topic: 'pearl-3815.datacloud-streaming-channel', fromBeginning: true });
@@ -209,13 +209,13 @@ const setupKafka = async () => {
             clientId: "my-app",
             brokers: [
               kafkaBroker[0],
-              kafkaBroker[1],
-              kafkaBroker[2],
-              kafkaBroker[3],
-              kafkaBroker[4],
-              kafkaBroker[5],
-              kafkaBroker[6],
-              kafkaBroker[7], 
+              // kafkaBroker[1],
+              // kafkaBroker[2],
+              // kafkaBroker[3],
+              // kafkaBroker[4],
+              // kafkaBroker[5],
+              // kafkaBroker[6],
+              // kafkaBroker[7], 
             ],
             ssl: {
               rejectUnauthorized: false,
