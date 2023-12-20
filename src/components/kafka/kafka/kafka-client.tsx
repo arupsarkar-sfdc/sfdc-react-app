@@ -85,7 +85,16 @@ const KafkaClient: FC = () => {
 
   };
 
-  const startConsumer = () => {};
+  const startConsumer = () => {
+
+    //fetch the /api/kafka/startConsumer endpoint
+    fetch("/api/kafka/startConsumer")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+      })
+      .catch((error) => console.error(error));
+  };
 
   console.log(menu);
   return (

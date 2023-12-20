@@ -39,7 +39,7 @@ const checkx509Certificate = async () => {
 
 const startConsumer = async (req, res) => {
     try{
-        const kafka = setupKafka();
+        const kafka = await setupKafka();
         const consumer = kafka.consumer({ groupId: 'test-group' });
         await consumer.connect();
         console.log("consumer connected");
