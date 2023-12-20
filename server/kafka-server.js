@@ -207,8 +207,11 @@ const setupKafka = async () => {
 
         const herokuKafka = new Kafka({
             clientId: "my-app",
+            consumerGroupId: "my-app",
             consumer: {
               groupId: 'my-app',
+              sessionTimeout: 90000,
+              heartbeatInterval: 30000,
             },
             brokers: [
               kafkaBroker[0],
