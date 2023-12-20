@@ -77,9 +77,9 @@ const stopConsumer = async () => {
 const startProducer = async (req, res) => {
     try{
 
-        const kafka = setupKafka();
+        const kafka = await setupKafka();
         console.log("start producer - kafka ", kafka)       
-        const producer = kafka.producer();
+        const producer = await kafka.producer();
         await producer.connect();
         console.log("producer connected");
         kafka.logger().info('producer connected');
@@ -148,8 +148,8 @@ const setupKafka = async () => {
             ssl: {
               // rejectUnauthorized: true,
               ca: [kafkaTrustedCert],
-              cert: envData.kafka_client_cert,
-              key: envData.kafka_client_cert_key,
+              cert: process.env.KAFKA_CLIENT_CERT,
+              key: process.env.KAFKA_CLIENT_CERT_KEY,
               checkServerIdentity(hostname, cert) {
                   console.log("hostname", hostname);
                   console.log("cert", cert);
@@ -163,12 +163,6 @@ const setupKafka = async () => {
                     
               },
             },
-        })
-        .then(() => {
-            console.log("Kafka client created");
-        })
-        .catch((error) => {
-            console.error("Error creating kafka client", error);
         })
         return herokuKafka;
 
