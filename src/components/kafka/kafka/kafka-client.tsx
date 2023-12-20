@@ -69,12 +69,13 @@ const KafkaClient: FC = () => {
             brokers: [
               kafkaBroker[0], kafkaBroker[1], kafkaBroker[2]
             ],
-            ssl: {
-              rejectUnauthorized: true,
-              ca: [envData.kafka_trusted_cert],
-              cert: [envData.kafka_client_cert],
-              key: [envData.kafka_client_cert_key],
-            },
+            ssl: true,
+            // ssl: {
+            //   rejectUnauthorized: true,
+            //   ca: [envData.kafka_trusted_cert],
+            //   cert: [envData.kafka_client_cert],
+            //   key: [envData.kafka_client_cert_key],
+            // },
           };
           //set the kafkaConfig to the state variable kafkaConfig
           setKafkaConfig(kafkaConfig);
