@@ -60,9 +60,6 @@ const startConsumer = async (req, res) => {
               })
             },
           })
-          //return the response to the client
-        res.status(200).send("Consumer started");
-        
     }catch(error) {
         console.error("Error starting consumer", error)
     }
