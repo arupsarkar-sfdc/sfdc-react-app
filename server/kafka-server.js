@@ -40,7 +40,33 @@ const checkx509Certificate = async () => {
 const startConsumer = async (req, res) => {
     try{
         const kafka = await setupKafka();
-        const consumer = kafka.consumer({ groupId: 'my-app' });
+        //get cluster information
+        const admin = await getAdminClient();
+        const clusterInfo = await admin.describeCluster();
+        console.log("clusterInfo", clusterInfo);
+        const topics = await admin.listTopics();
+        console.log("topics", topics);
+        //fetch topic metadata
+        const topicMetadata = await admin.fetchTopicMetadata({ topics: ['pearl-3815.datacloud-streaming-channel'] });
+        console.log("topicMetadata", topicMetadata);
+
+        const consumer = kafka.consumer({ groupId: 'my-app', partitionAssigners: [({ cluster }) =>
+          {
+            console.log("cluster", cluster);
+            return async ({ topic, partitions: partitionMetadata, groupId }) =>
+            {
+              console.log("topic", topic);
+              console.log("partitionMetadata", partitionMetadata);
+              console.log("groupId", groupId);
+              return partitionMetadata.map((partition) => ({
+                topic,
+                partition: partition.partitionId,
+                //offset: partitionMetadata.partitionId,
+              }));
+            };
+          }
+        ]});
+        
         await consumer.connect();
         console.log("consumer connected");
         await consumer.subscribe({ topic: 'pearl-3815.datacloud-streaming-channel', fromBeginning: true });
@@ -118,6 +144,18 @@ const startProducer = async (req, res) => {
   }
 }
 
+  const getAdminClient = async () => {
+    try{
+      const kafka = await setupKafka();
+      const admin = kafka.admin();
+      await admin.connect();
+      console.log("admin connected");
+      return admin;
+    }catch(error) {
+      console.error("Error creating admin client", error)
+    }
+
+  }
   const stopProducer = async () => {
     try{
       //create an instance of the producer
