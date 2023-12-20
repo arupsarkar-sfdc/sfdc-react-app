@@ -110,6 +110,9 @@ const startConsumer = async (req, res) => {
             sessionTimeout: 90000,
             heartbeatInterval: 30000,
           }
+        },
+        {
+          nodeId: clusterInfo.brokers.nodeId
         },{
           eachMessage: async ({ topic, partition, message }) => {
             console.log({
