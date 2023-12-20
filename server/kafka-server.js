@@ -76,8 +76,9 @@ const stopConsumer = async () => {
 
 const startProducer = async (req, res) => {
     try{
-       console.log("start producer - kafka ", kafka)
-       const kafka = setupKafka();
+
+        const kafka = setupKafka();
+        console.log("start producer - kafka ", kafka)       
         const producer = kafka.producer();
         await producer.connect();
         console.log("producer connected");
