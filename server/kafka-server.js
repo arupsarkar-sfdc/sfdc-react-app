@@ -81,17 +81,23 @@ const startProducer = async (req, res) => {
         const producer = kafka.producer();
         await producer.connect();
         console.log("producer connected");
+        kafka.logger().info('producer connected');
         await producer.send({
             topic: 'pearl-3815.datacloud-streaming-channel',
             messages: [
               { value: 'Hello KafkaJS user!' },
             ],
           })
-
-    }catch(error) {
-
-    }
+          .then((data) => {
+            console.log("data", data);
+          })
+          .catch((error) => {
+            console.log("error", error);
+          })
+  }catch(error) {
+      console.error("Error starting producer", error)
   }
+}
 
   const stopProducer = async () => {
     try{
