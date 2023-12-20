@@ -114,15 +114,36 @@ const startProducer = async (req, res) => {
     }
   }
 
+const getKafkaBroker = async () => {
+    try{
+        const kafkaBroker = process.env.KAFKA_URL.split(",");
+        //iterate the kafka broker array and remove any trailing spaces
+        kafkaBroker.forEach((broker, index) => {
+            let s = broker.trim();
+            s = s.replace(/kafka\+ssl:\/\//gi, "")
+            kafkaBroker[index] = s;
+        })
+        console.log("kafkaBroker", kafkaBroker);
+        return kafkaBroker;
+    }catch(error) {
+        console.error("Error getting kafka broker", error)
+    }
+}
             
 //create kafka client using .env for SSL parameters
 const setupKafka = async () => {
     try{
         const kafkaTrustedCert = checkx509Certificate()
+        //get the kafka broker from getKafkaBroker function, push it into a string array
+        const kafkaBroker = await getKafkaBroker();
+        console.log("kafkaBroker 0", kafkaBroker[0]);
+        console.log("kafkaBroker 1", kafkaBroker[1]);
+        console.log("kafkaBroker 2", kafkaBroker[2]);
+
         const herokuKafka = new Kafka({
             clientId: "my-app",
             brokers: [
-              kafkaBroker[0], kafkaBroker[1], kafkaBroker[2]
+              kafkaBroker[0]
             ],
             ssl: {
               // rejectUnauthorized: true,
