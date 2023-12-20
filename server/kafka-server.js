@@ -102,24 +102,53 @@ const startConsumer = async (req, res) => {
         await consumer.connect();
         console.log("consumer connected");
         await consumer.subscribe({ topic: 'pearl-3815.datacloud-streaming-channel', fromBeginning: true });
-        await consumer.run({
-            eachMessage: async ({ topic, partition, message }) => {
-              console.log({
-                partition,
-                offset: message.offset,
-                key: message.key.toString(),
-                value: message.value.toString(),
-                headers: message.headers,
-                timestamp: message.timestamp,
-                topic: topic,
-              })
-            },
-          }).then((data) => {
-            console.log("consumer run data", data);
-          })
-          .catch((error) => {
-            console.log("consumer run error", error);
-          })
+        // run the consumer with consumerGroup as parameter
+        await consumer.run(
+        {
+            consumerGroup: {
+            groupId: 'my-app',
+            sessionTimeout: 90000,
+            heartbeatInterval: 30000,
+          }
+        },{
+          eachMessage: async ({ topic, partition, message }) => {
+            console.log({
+              partition,
+              offset: message.offset,
+              key: message.key.toString(),
+              value: message.value.toString(),
+              headers: message.headers,
+              timestamp: message.timestamp,
+              topic: topic,
+            })
+          },
+        })
+        .then((data) => {
+          console.log("consumer run data", data);
+        })
+        .catch((error) => {
+          console.log("consumer run error", error);
+        })
+
+
+        // await consumer.run({
+        //     eachMessage: async ({ topic, partition, message }) => {
+        //       console.log({
+        //         partition,
+        //         offset: message.offset,
+        //         key: message.key.toString(),
+        //         value: message.value.toString(),
+        //         headers: message.headers,
+        //         timestamp: message.timestamp,
+        //         topic: topic,
+        //       })
+        //     },
+        //   }).then((data) => {
+        //     console.log("consumer run data", data);
+        //   })
+        //   .catch((error) => {
+        //     console.log("consumer run error", error);
+        //   })
 
     }catch(error) {
         console.error("Error starting consumer", error)
