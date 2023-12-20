@@ -24,23 +24,20 @@ const KafkaClient: FC = () => {
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
     console.log("useEffect");
-
   }, []);
 
-
   const startProducer = async () => {
-    try{
-      console.log("start producer - kafka ")
+    try {
+      console.log("start producer - kafka ");
       fetch("/api/kafka/startProducer")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("data", data);
-      })
-      .catch((error) => console.error(error));
-    }catch(error){
-      console.error("producer error --> ", error)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("data", data);
+        })
+        .catch((error) => console.error(error));
+    } catch (error) {
+      console.error("producer error --> ", error);
     }
-
   };
 
   const startConsumer = () => {
@@ -51,6 +48,38 @@ const KafkaClient: FC = () => {
         console.log("data", data);
       })
       .catch((error) => console.error(error));
+  };
+
+  const stopConsumer = () => {
+    //fetch the /api/kafka/stopConsumer endpoint
+    fetch("/api/kafka/stopConsumer")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const stopProducer = () => {
+    //fetch the /api/kafka/stopProducer endpoint
+    fetch("/api/kafka/stopProducer")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const publishMessages = () => {
+    //fetch the /api/kafka/publishMessages endpoint
+    console.log("publish messages - start");
+    console.log("publish messages - end");
+    // fetch("/api/kafka/publishMessages")
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     console.log("data", data);
+    //   })
+    //   .catch((error) => console.error(error));
   };
 
   console.log(menu);
@@ -64,31 +93,96 @@ const KafkaClient: FC = () => {
                 Kafka Message Streaming
                 {new Date().toLocaleString()}
               </InputLabel>
+              <Box sx={{ p: 2, border: 1, borderColor: "grey.500" }}>
+                <Grid container spacing={2}>
+                  <Grid xs={6}>
+                    <Button
+                      onClick={startProducer}
+                      size="small"
+                      variant="contained"
+                      sx={{ mt: 2 }}
+                    >
+                      Start Producer
+                    </Button>
+                  </Grid>
 
-              {/* <Button
-                onClick={initializeKafka}
-                size="small"
-                variant="contained"
-                sx={{ mt: 2 }}
-              >
-                Initialize Kafka
-              </Button> */}
-              <Button
-                onClick={startProducer}
-                size="small"
-                variant="contained"
-                sx={{ mt: 2 }}
-              >
-                Start Producer
-              </Button>
-              <Button
-                onClick={startConsumer}
-                size="small"
-                variant="contained"
-                sx={{ mt: 2 }}
-              >
-                Start Consumer
-              </Button>
+                  <Grid xs={6}>
+                    <Button
+                      onClick={stopProducer}
+                      size="small"
+                      variant="contained"
+                      color="error"
+                      sx={{ mt: 2 }}
+                    >
+                      Stop Producer
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1}>
+                  <Grid xs={12}>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Payload"
+                      multiline
+                      fullWidth
+                      rows={4}
+                      defaultValue="Kafka streams payload"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1}>
+                  <Grid xs={12}>
+                    <Button
+                      onClick={publishMessages}
+                      size="small"
+                      variant="outlined"
+                      sx={{ mt: 2 }}
+                    >
+                      Publish Messages
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+              
+
+              <Box sx={{ p: 2, border: 1, borderColor: "grey.500" }}>
+                <Grid container spacing={2}>
+                  <Grid xs={6}>
+                    <Button
+                      onClick={startConsumer}
+                      size="small"
+                      variant="contained"
+                      sx={{ mt: 2 }}
+                    >
+                      Start Consumer
+                    </Button>
+                  </Grid>
+
+                  <Grid xs={6}>
+                    <Button
+                      onClick={stopConsumer}
+                      size="small"
+                      variant="contained"
+                      color="error"
+                      sx={{ mt: 2 }}
+                    >
+                      Stop Consumer
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1}>
+                  <Grid xs={12}>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Output"
+                      multiline
+                      fullWidth
+                      rows={4}
+                      defaultValue="Kafka streams output"
+                    />
+                  </Grid>
+                </Grid>                
+              </Box>
             </Grid>
           </Grid>
         </Box>
