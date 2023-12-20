@@ -122,7 +122,7 @@ const startProducer = async (req, res) => {
     try{
       //create an instance of the producer
       const kafka = await setupKafka();
-      const producer = await kafka.producer();
+      const producer = await kafka.producer({createPartitioner: Partitioners.LegacyPartitioner});
       //disconnect the producer
       await producer.disconnect()
       .then(() => {
