@@ -1,5 +1,5 @@
 //import kafkajs
-const { Kafka } = require('kafkajs');
+const { Kafka, Partitioners } = require('kafkajs');
 const express = require("express");
 const app = express();
 
@@ -70,13 +70,20 @@ const startConsumer = async (req, res) => {
 
 const stopConsumer = async () => {
     try{
-        await consumer.disconnect()
-        .then(() => {
+        const kafka = await setupKafka();
+        const consumer = kafka.consumer({ groupId: 'my-app' });
+        if(consumer != undefined){
+          await consumer.disconnect()
+          .then(() => {
             console.log("consumer disconnected");
-        })
-        .catch((error) => {
+          })
+          .catch((error) => {
             console.error("Error disconnecting consumer", error);
-        })
+          })
+          console.log("consumer stopped");
+        }
+        
+
     }
     catch(error){
         console.log("Error stopping consumer", error)
@@ -89,7 +96,7 @@ const startProducer = async (req, res) => {
 
         const kafka = await setupKafka();
         console.log("start producer - kafka ", kafka)       
-        const producer = await kafka.producer();
+        const producer = await kafka.producer({createPartitioner: Partitioners.LegacyPartitioner});
         await producer.connect();
         console.log("producer connected");
         kafka.logger().info('producer connected');
@@ -113,6 +120,10 @@ const startProducer = async (req, res) => {
 
   const stopProducer = async () => {
     try{
+      //create an instance of the producer
+      const kafka = await setupKafka();
+      const producer = await kafka.producer();
+      //disconnect the producer
       await producer.disconnect()
       .then(() => {
           console.log("producer disconnected");
