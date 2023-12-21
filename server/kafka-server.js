@@ -126,7 +126,7 @@ const startConsumer = async (req, res) => {
               })
             },
           })));
-          
+
       //   await consumer.run({
       //     eachBatchAutoResolve: true,
       //     eachBatch: async ({
@@ -359,7 +359,7 @@ const setupKafka = async () => {
                     
               // },
             },
-            logLevel: logLevel.DEBUG,
+            logLevel: logLevel.ERROR,
         })
         return herokuKafka;
 
