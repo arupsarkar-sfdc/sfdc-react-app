@@ -89,6 +89,26 @@ const startConsumer = async (req, res) => {
                 timestamp: message.timestamp,
                 topic: topic,
               })
+              //create server side event stream to send data to client
+              res.setHeader('Content-Type', 'text/event-stream');
+              res.setHeader('Cache-Control', 'no-cache');
+              res.setHeader('Connection', 'keep-alive');
+
+              //send an event every second
+              const intervalId = setInterval(() => {
+                res.write(`data: ${message.value.toString()}\n\n`);
+              }, 1000);
+
+              req.on('close', () => {
+                clearInterval(intervalId);
+                res.end();
+              })
+
+              //send heartbeat to kafka
+              heartbeat();
+              //pause the consumer
+              //await pause();
+
             },
           })
           .then(() => {
