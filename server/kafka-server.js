@@ -79,11 +79,11 @@ const startConsumer = async (req, res) => {
           await consumerInstance.subscribe({ topic: consumer.Topic, fromBeginning: true });
           console.log("---> running the consumer - kafka ")
           await consumerInstance.run({
-            eachMessage: async ({ topic, partition, message }) => {
+            eachMessage: async ({ topic, partition, message, heartbeat, pause }) => {
               console.log({
                 partition,
                 offset: message.offset,
-                key: message.key.toString(),
+                // key: message.key.toString(),
                 value: message.value.toString(),
                 headers: message.headers,
                 timestamp: message.timestamp,
@@ -218,9 +218,12 @@ const startProducer = async (req, res) => {
         kafka.logger().info('producer connected');
         await producer.send({
             topic: 'pearl-3815.datacloud-streaming-channel',
+            Group: 'pearl-3815.dc-streaming',
             messages: [
               //attach a todays date with locale to the message
-              { key: new Date().toLocaleString(), value: new Date().toLocaleString() + ' Hello KafkaJS user!' },
+              { key: new Date().toLocaleString(), value: new Date().toLocaleString() + ' Hello KafkaJS user! ' + Math.random() },
+              { key: new Date().toLocaleString(), value: new Date().toLocaleString() + ' Hello KafkaJS user! ' + Math.random()},
+              { key: new Date().toLocaleString(), value: new Date().toLocaleString() + ' Hello KafkaJS user! ' + Math.random()},
             ],
           })
           .then((data) => {
