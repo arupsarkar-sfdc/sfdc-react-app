@@ -282,13 +282,13 @@ const setupKafka = async () => {
         //get the kafka broker from getKafkaBroker function, push it into a string array
         const kafkaBroker = await getKafkaBroker();
         console.log("kafkaBroker 0", kafkaBroker[0]);
-        console.log("kafkaBroker 1", kafkaBroker[1]);
-        console.log("kafkaBroker 2", kafkaBroker[2]);
-        console.log("kafkaBroker 3", kafkaBroker[3]);
-        console.log("kafkaBroker 4", kafkaBroker[4]);
-        console.log("kafkaBroker 5", kafkaBroker[5]);
-        console.log("kafkaBroker 6", kafkaBroker[6]);        
-        console.log("kafkaBroker 7", kafkaBroker[7]);        
+        // console.log("kafkaBroker 1", kafkaBroker[1]);
+        // console.log("kafkaBroker 2", kafkaBroker[2]);
+        // console.log("kafkaBroker 3", kafkaBroker[3]);
+        // console.log("kafkaBroker 4", kafkaBroker[4]);
+        // console.log("kafkaBroker 5", kafkaBroker[5]);
+        // console.log("kafkaBroker 6", kafkaBroker[6]);        
+        // console.log("kafkaBroker 7", kafkaBroker[7]);        
 
         const herokuKafka = new Kafka({
             clientId: "my-app",
@@ -300,13 +300,13 @@ const setupKafka = async () => {
             // },
             brokers: [
               kafkaBroker[0],
-              kafkaBroker[1],
-              kafkaBroker[2],
-              kafkaBroker[3],
-              kafkaBroker[4],
-              kafkaBroker[5],
-              kafkaBroker[6],
-              kafkaBroker[7], 
+              // kafkaBroker[1],
+              // kafkaBroker[2],
+              // kafkaBroker[3],
+              // kafkaBroker[4],
+              // kafkaBroker[5],
+              // kafkaBroker[6],
+              // kafkaBroker[7], 
             ],
             ssl: {
               rejectUnauthorized: false,
@@ -327,7 +327,7 @@ const setupKafka = async () => {
                     
               // },
             },
-            logLevel: logLevel.ERROR,
+            logLevel: logLevel.DEBUG,
         })
         return herokuKafka;
 
