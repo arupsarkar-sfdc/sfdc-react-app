@@ -308,6 +308,10 @@ const setupKafka = async () => {
               // kafkaBroker[6],
               // kafkaBroker[7], 
             ],
+            retry: {
+              initialRetryTime: 100,
+              retries: 8
+            },
             ssl: {
               rejectUnauthorized: false,
               //ca: kafkaTrustedCert,
@@ -326,6 +330,10 @@ const setupKafka = async () => {
               //     }
                     
               // },
+            },
+            restartOnFailure: async (error) => {
+              console.error("Error connecting to kafka", error)
+              return true;
             },
             logLevel: logLevel.DEBUG,
         })
