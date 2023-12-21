@@ -474,8 +474,8 @@ app.get("/api/kafka/stopProducer", async (req, res) => {
   
 app.get("/api/kafka/startConsumer", async (req, res) => {
   try{
-    await kafka.startConsumer();
-    res.status(200).send({ message: "Consumer started" });
+    const messages = await kafka.startConsumer();
+    res.status(200).send({ message: messages });
   }catch(error) {
     res.status(500).send("Error starting consumer");
   }

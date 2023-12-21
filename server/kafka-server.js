@@ -98,8 +98,6 @@ const startConsumer = async (req, res) => {
             },
           })
           .then(() => {
-            //return the messages array
-            res.send(messages);
             console.log("consumer started");
           })
           .catch((error) => {
@@ -107,85 +105,7 @@ const startConsumer = async (req, res) => {
           })
         }
 
-
-
-
-        // //create a consumer with force permission on the group coordinator
-        // const consumer = kafka.consumer({ groupId: 'my-app', 
-        //       allowAutoTopicCreation: true, 
-        //       maxBytesPerPartition: 1000000, 
-        //       maxBytes: 1000000, 
-        //       maxWaitTimeInMs: 1000, 
-        //       minBytes: 1, 
-        //       retry: { retries: 5 }, 
-        //       sessionTimeout: 90000, 
-        //       heartbeatInterval: 30000, 
-        //       partitionAssigners: [({ cluster }) => {
-        //         console.log("cluster", cluster);
-        //         return async ({ topic, partitions: partitionMetadata, groupId }) => {
-        //           console.log("topic", topic);
-        //           console.log("partitionMetadata", partitionMetadata);
-        //           console.log("groupId", groupId);
-        //           return partitionMetadata.map((partition) => ({
-        //             topic,
-        //             partition: partition.partitionId,
-        //             //offset: partitionMetadata.partitionId,
-        //           }));
-        //         }
-        //       }
-        // ]});
-
-
-
-      // //const consumer = kafka.consumer({ groupId: 'my-app'});
-      //   const consumers = [
-      //     kafka.consumer({ groupId: 'gr1-'+Date.now()}),
-      //     kafka.consumer({ groupId: 'gr2-'+Date.now()}),
-      //     kafka.consumer({ groupId: 'gr3-'+Date.now()}),
-      //     kafka.consumer({ groupId: 'gr4-'+Date.now()}),
-      //     kafka.consumer({ groupId: 'gr5-'+Date.now()}),
-      //     kafka.consumer({ groupId: 'gr6-'+Date.now()}),
-      //     kafka.consumer({ groupId: 'gr7-'+Date.now()}),
-      //     kafka.consumer({ groupId: 'gr8-'+Date.now()}),
-      //   ]
-
-      //   //connect to consumer group
-      //   // await consumer.connect()
-      //   // .then(() => {
-      //   //   console.log("consumer connected");
-      //   // })
-      //   // .catch((error) => {
-      //   //   console.error("Error connecting consumer", error);
-      //   // })
-
-      //   await Promise.all(consumers.map((consumer) => consumer.connect()));
-
-
-
-      //   //Subscribe to topic
-      //   // await consumer.subscribe({ topic: 'pearl-3815.datacloud-streaming-channel', fromBeginning: true });
-      //   await Promise.all(consumers.map((consumer) => 
-      //     consumer.subscribe({ 
-      //       topic: 'pearl-3815.datacloud-streaming-channel', 
-      //       fromBeginning: true 
-      //     })));
-
-      //   // run the consumer
-      //   await Promise.all(consumers.map((consumer) => 
-      //     consumer.run({
-      //       eachMessage: async ({ topic, partition, message }) => {
-      //         console.log({
-      //           partition,
-      //           offset: message.offset,
-      //           key: message.key.toString(),
-      //           value: message.value.toString(),
-      //           headers: message.headers,
-      //           timestamp: message.timestamp,
-      //           topic: topic,
-      //         })
-      //       },
-      //     })));
-
+        return messages;
 
     }catch(error) {
         console.error("Error starting consumer", error)
