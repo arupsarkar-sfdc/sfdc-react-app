@@ -1,5 +1,5 @@
 //import kafkajs
-const { Kafka, Partitioners } = require('kafkajs');
+const { Kafka, Partitioners, logLevel } = require('kafkajs');
 const express = require("express");
 const app = express();
 
@@ -51,87 +51,102 @@ const startConsumer = async (req, res) => {
         console.log("topicMetadata", topicMetadata);
 
 
-        //create a consumer with force permission on the group coordinator
-        const consumer = kafka.consumer({ groupId: 'my-app', 
-              allowAutoTopicCreation: true, 
-              maxBytesPerPartition: 1000000, 
-              maxBytes: 1000000, 
-              maxWaitTimeInMs: 1000, 
-              minBytes: 1, 
-              retry: { retries: 5 }, 
-              sessionTimeout: 90000, 
-              heartbeatInterval: 30000, 
-              partitionAssigners: [({ cluster }) => {
-                console.log("cluster", cluster);
-                return async ({ topic, partitions: partitionMetadata, groupId }) => {
-                  console.log("topic", topic);
-                  console.log("partitionMetadata", partitionMetadata);
-                  console.log("groupId", groupId);
-                  return partitionMetadata.map((partition) => ({
-                    topic,
-                    partition: partition.partitionId,
-                    //offset: partitionMetadata.partitionId,
-                  }));
-                }
-              }
-        ]});
-
-        
-
-
-        
-
-
-        // const consumer = kafka.consumer({ groupId: 'my-app', partitionAssigners: [({ cluster }) =>
-        //   {
-        //     console.log("cluster", cluster);
-        //     return async ({ topic, partitions: partitionMetadata, groupId }) =>
-        //     {
-        //       console.log("topic", topic);
-        //       console.log("partitionMetadata", partitionMetadata);
-        //       console.log("groupId", groupId);
-        //       return partitionMetadata.map((partition) => ({
-        //         topic,
-        //         partition: partition.partitionId,
-        //         //offset: partitionMetadata.partitionId,
-        //       }));
-        //     };
-        //   }
+        // //create a consumer with force permission on the group coordinator
+        // const consumer = kafka.consumer({ groupId: 'my-app', 
+        //       allowAutoTopicCreation: true, 
+        //       maxBytesPerPartition: 1000000, 
+        //       maxBytes: 1000000, 
+        //       maxWaitTimeInMs: 1000, 
+        //       minBytes: 1, 
+        //       retry: { retries: 5 }, 
+        //       sessionTimeout: 90000, 
+        //       heartbeatInterval: 30000, 
+        //       partitionAssigners: [({ cluster }) => {
+        //         console.log("cluster", cluster);
+        //         return async ({ topic, partitions: partitionMetadata, groupId }) => {
+        //           console.log("topic", topic);
+        //           console.log("partitionMetadata", partitionMetadata);
+        //           console.log("groupId", groupId);
+        //           return partitionMetadata.map((partition) => ({
+        //             topic,
+        //             partition: partition.partitionId,
+        //             //offset: partitionMetadata.partitionId,
+        //           }));
+        //         }
+        //       }
         // ]});
 
-        await consumer.connect();
-        console.log("consumer connected");
-        await consumer.subscribe({ topic: 'pearl-3815.datacloud-streaming-channel', fromBeginning: true });
-        // run the consumer with consumerGroup as parameter
-        await consumer.run(
-        {
-            consumerGroup: {
-            groupId: 'my-app',
-            sessionTimeout: 90000,
-            heartbeatInterval: 30000,
-          }
-        },
-        {
-          nodeId: clusterInfo.brokers.nodeId
-        },{
-          eachMessage: async ({ topic, partition, message }) => {
-            console.log({
-              partition,
-              offset: message.offset,
-              key: message.key.toString(),
-              value: message.value.toString(),
-              headers: message.headers,
-              timestamp: message.timestamp,
-              topic: topic,
-            })
-          },
-        })
-        .then((data) => {
-          console.log("consumer run data", data);
+        //create the consumer
+        const consumer = kafka.consumer({ groupId: 'my-app'});
+        //connect to consumer group
+        await consumer.connect()
+        .then(() => {
+          console.log("consumer connected");
         })
         .catch((error) => {
-          console.log("consumer run error", error);
+          console.error("Error connecting consumer", error);
         })
+        //Sunscribe to topic
+        await consumer.subscribe({ topic: 'pearl-3815.datacloud-streaming-channel', fromBeginning: true });
+        // run the consumer
+        await consumer.run({
+          eachBatchAutoResolve: true,
+          eachBatch: async ({
+              batch,
+              resolveOffset,
+              heartbeat,
+              commitOffsetsIfNecessary,
+              uncommittedOffsets,
+              isRunning,
+              isStale,
+              pause,
+          }) => {
+              for (let message of batch.messages) {
+                  console.log({
+                      topic: batch.topic,
+                      partition: batch.partition,
+                      highWatermark: batch.highWatermark,
+                      message: {
+                          offset: message.offset,
+                          key: message.key.toString(),
+                          value: message.value.toString(),
+                          headers: message.headers,
+                      }
+                  })
+      
+                  resolveOffset(message.offset)
+                  await heartbeat()
+              }
+          },
+      })
+      .then((data) => {
+        console.log("consumer run data", data);
+      })
+      .catch((error) => {
+        console.log("consumer run error", error);
+      })
+
+
+        // // run the consumer with consumerGroup as parameter
+        // await consumer.run({
+        //   eachMessage: async ({ topic, partition, message }) => {
+        //     console.log({
+        //       partition,
+        //       offset: message.offset,
+        //       key: message.key.toString(),
+        //       value: message.value.toString(),
+        //       headers: message.headers,
+        //       timestamp: message.timestamp,
+        //       topic: topic,
+        //     })
+        //   },
+        // })
+        // .then((data) => {
+        //   console.log("consumer run data", data);
+        // })
+        // .catch((error) => {
+        //   console.log("consumer run error", error);
+        // })
 
 
         // await consumer.run({
@@ -194,7 +209,7 @@ const startProducer = async (req, res) => {
             topic: 'pearl-3815.datacloud-streaming-channel',
             messages: [
               //attach a todays date with locale to the message
-              { ket: "key 1", value: new Date().toLocaleString() + ' Hello KafkaJS user!' },
+              { key: new Date().toLocaleString(), value: new Date().toLocaleString() + ' Hello KafkaJS user!' },
             ],
           })
           .then((data) => {
@@ -306,6 +321,7 @@ const setupKafka = async () => {
                     
               // },
             },
+            logLevel: logLevel.DEBUG,
         })
         return herokuKafka;
 
