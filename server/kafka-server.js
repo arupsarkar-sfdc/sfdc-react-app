@@ -52,7 +52,8 @@ const startConsumer = async (req, res) => {
         console.log("topicMetadata", topicMetadata);
 
 
-
+        console.log("---> start consumer - kafka ", "START")
+        console.log("---> defining consumers - kafka ")
         const consumers = [
           {
             Topic: 'pearl-3815.datacloud-streaming-channel',
@@ -63,6 +64,35 @@ const startConsumer = async (req, res) => {
             Group: 'gr2-'+Date.now()
           }
         ]
+        console.log("---> looping consumers - kafka ")
+        for (const consumer of consumers) {
+          console.log("---> creating an instance of consumer - kafka ")
+          const consumerInstance = kafka.consumer({ groupId: consumer.Group });
+          console.log("---> connecting to an instance of consumer - kafka ")
+          await consumerInstance.connect();
+          console.log("---> subscribing to topic - kafka ")
+          await consumerInstance.subscribe({ topic: consumer.Topic, fromBeginning: true });
+          console.log("---> running the consumer - kafka ")
+          await consumerInstance.run({
+            eachMessage: async ({ topic, partition, message }) => {
+              console.log({
+                partition,
+                offset: message.offset,
+                key: message.key.toString(),
+                value: message.value.toString(),
+                headers: message.headers,
+                timestamp: message.timestamp,
+                topic: topic,
+              })
+            },
+          })
+          .then(() => {
+            console.log("consumer started");
+          })
+          .catch((error) => {
+            console.error("Error starting consumer", error);
+          })
+        }
 
 
 
