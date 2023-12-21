@@ -1,6 +1,7 @@
 //import kafkajs
 const { Kafka, Partitioners, logLevel } = require('kafkajs');
 const express = require("express");
+const { Group } = require('@mui/icons-material');
 const app = express();
 
 
@@ -52,33 +53,16 @@ const startConsumer = async (req, res) => {
 
 
 
-        //create a consumer group
-        const consumerGroup = kafka.consumerGroup({ groupId: 'my-app' });
-        //create a consumer and attach it to the consumer group
-        const consumer = await consumerGroup.join();
-        console.log("consumer", consumer);
-        //subscribe to a topic
-        await consumer.subscribe({ topic: 'pearl-3815.datacloud-streaming-channel', fromBeginning: true });
-        //consume messages
-        await consumer.run({
-          eachMessage: async ({ topic, partition, message }) => {
-            console.log({
-              partition,
-              offset: message.offset,
-              key: message.key.toString(),
-              value: message.value.toString(),
-              headers: message.headers,
-              timestamp: message.timestamp,
-              topic: topic,
-            })
+        const consumers = [
+          {
+            Topic: 'pearl-3815.datacloud-streaming-channel',
+            Group: 'gr1-'+Date.now()
           },
-        })
-        .then((data) => {
-          console.log("consumer run data", data);
-        })
-        .catch((error) => {
-          console.log("consumer run error", error);
-        })
+          {
+            Topic: 'pearl-3815.streaming-channel',
+            Group: 'gr2-'+Date.now()
+          }
+        ]
 
 
 
