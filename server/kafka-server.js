@@ -76,55 +76,93 @@ const startConsumer = async (req, res) => {
         //       }
         // ]});
 
-        //create the consumer
-        const consumer = kafka.consumer({ groupId: 'my-app'});
+
+
+      //const consumer = kafka.consumer({ groupId: 'my-app'});
+        const consumers = [
+          kafka.consumer({ groupId: 'gr1-'+Date.now()}),
+          kafka.consumer({ groupId: 'gr2-'+Date.now()}),
+          kafka.consumer({ groupId: 'gr3-'+Date.now()}),
+          kafka.consumer({ groupId: 'gr4-'+Date.now()}),
+          kafka.consumer({ groupId: 'gr5-'+Date.now()}),
+          kafka.consumer({ groupId: 'gr6-'+Date.now()}),
+          kafka.consumer({ groupId: 'gr7-'+Date.now()}),
+          kafka.consumer({ groupId: 'gr8-'+Date.now()}),
+        ]
+
         //connect to consumer group
-        await consumer.connect()
-        .then(() => {
-          console.log("consumer connected");
-        })
-        .catch((error) => {
-          console.error("Error connecting consumer", error);
-        })
-        //Sunscribe to topic
-        await consumer.subscribe({ topic: 'pearl-3815.datacloud-streaming-channel', fromBeginning: true });
+        // await consumer.connect()
+        // .then(() => {
+        //   console.log("consumer connected");
+        // })
+        // .catch((error) => {
+        //   console.error("Error connecting consumer", error);
+        // })
+
+        await Promise.all(consumers.map((consumer) => consumer.connect()));
+
+
+
+        //Subscribe to topic
+        // await consumer.subscribe({ topic: 'pearl-3815.datacloud-streaming-channel', fromBeginning: true });
+        await Promise.all(consumers.map((consumer) => 
+          consumer.subscribe({ 
+            topic: 'pearl-3815.datacloud-streaming-channel', 
+            fromBeginning: true 
+          })));
+
         // run the consumer
-        await consumer.run({
-          eachBatchAutoResolve: true,
-          eachBatch: async ({
-              batch,
-              resolveOffset,
-              heartbeat,
-              commitOffsetsIfNecessary,
-              uncommittedOffsets,
-              isRunning,
-              isStale,
-              pause,
-          }) => {
-              for (let message of batch.messages) {
-                  console.log({
-                      topic: batch.topic,
-                      partition: batch.partition,
-                      highWatermark: batch.highWatermark,
-                      message: {
-                          offset: message.offset,
-                          key: message.key.toString(),
-                          value: message.value.toString(),
-                          headers: message.headers,
-                      }
-                  })
+        await Promise.all(consumers.map((consumer) => 
+          consumer.run({
+            eachMessage: async ({ topic, partition, message }) => {
+              console.log({
+                partition,
+                offset: message.offset,
+                key: message.key.toString(),
+                value: message.value.toString(),
+                headers: message.headers,
+                timestamp: message.timestamp,
+                topic: topic,
+              })
+            },
+          })));
+          
+      //   await consumer.run({
+      //     eachBatchAutoResolve: true,
+      //     eachBatch: async ({
+      //         batch,
+      //         resolveOffset,
+      //         heartbeat,
+      //         commitOffsetsIfNecessary,
+      //         uncommittedOffsets,
+      //         isRunning,
+      //         isStale,
+      //         pause,
+      //     }) => {
+      //         for (let message of batch.messages) {
+      //             console.log({
+      //                 topic: batch.topic,
+      //                 partition: batch.partition,
+      //                 highWatermark: batch.highWatermark,
+      //                 message: {
+      //                     offset: message.offset,
+      //                     key: message.key.toString(),
+      //                     value: message.value.toString(),
+      //                     headers: message.headers,
+      //                 }
+      //             })
       
-                  resolveOffset(message.offset)
-                  await heartbeat()
-              }
-          },
-      })
-      .then((data) => {
-        console.log("consumer run data", data);
-      })
-      .catch((error) => {
-        console.log("consumer run error", error);
-      })
+      //             resolveOffset(message.offset)
+      //             await heartbeat()
+      //         }
+      //     },
+      // })
+      // .then((data) => {
+      //   console.log("consumer run data", data);
+      // })
+      // .catch((error) => {
+      //   console.log("consumer run error", error);
+      // })
 
 
         // // run the consumer with consumerGroup as parameter
