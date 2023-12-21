@@ -69,7 +69,12 @@ const startConsumer = async (req, res) => {
           console.log("---> creating an instance of consumer - kafka ")
           const consumerInstance = kafka.consumer({ groupId: consumer.Group });
           console.log("---> connecting to an instance of consumer - kafka ")
-          await consumerInstance.connect();
+          await consumerInstance.connect({
+            retry: {
+              initialRetryTime: 100,
+              retries: 8
+            },
+          });
           console.log("---> subscribing to topic - kafka ")
           await consumerInstance.subscribe({ topic: consumer.Topic, fromBeginning: true });
           console.log("---> running the consumer - kafka ")
@@ -335,7 +340,7 @@ const setupKafka = async () => {
               console.error("Error connecting to kafka", error)
               return true;
             },
-            logLevel: logLevel.DEBUG,
+            logLevel: logLevel.ERROR,
         })
         return herokuKafka;
 
