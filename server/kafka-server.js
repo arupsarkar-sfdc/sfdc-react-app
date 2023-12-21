@@ -57,7 +57,7 @@ const startConsumer = async (req, res) => {
         const consumers = [
           {
             Topic: 'pearl-3815.datacloud-streaming-channel',
-            Group: 'gr1-'+Date.now()
+            Group: 'pearl-3815.dc-streaming'
           },
           // {
           //   Topic: 'pearl-3815.streaming-channel',
@@ -187,7 +187,7 @@ const startConsumer = async (req, res) => {
 const stopConsumer = async () => {
     try{
         const kafka = await setupKafka();
-        const consumer = kafka.consumer({ groupId: 'my-app' });
+        const consumer = kafka.consumer({ groupId: 'pearl-3815.dc-streaming' });
         if(consumer != undefined){
           await consumer.disconnect()
           .then(() => {
