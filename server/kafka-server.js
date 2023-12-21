@@ -59,10 +59,10 @@ const startConsumer = async (req, res) => {
             Topic: 'pearl-3815.datacloud-streaming-channel',
             Group: 'gr1-'+Date.now()
           },
-          {
-            Topic: 'pearl-3815.streaming-channel',
-            Group: 'gr2-'+Date.now()
-          }
+          // {
+          //   Topic: 'pearl-3815.streaming-channel',
+          //   Group: 'gr2-'+Date.now()
+          // }
         ]
         console.log("---> looping consumers - kafka ")
         for (const consumer of consumers) {
