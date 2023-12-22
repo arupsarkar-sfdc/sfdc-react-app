@@ -20,15 +20,14 @@ import {
 
 const KafkaClient: FC = () => {
   const { menu } = useMenuGlobalContext();
-  const [data, setData] = useState<any>([]); 
+  const [data, setData] = useState<any[]>([]); 
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
     const eventSource = new EventSource("/api/kafka/events");
     eventSource.onmessage = (e) => {
       console.log("event source", e);
-      //set the current data
-      //setData(e.data);
+      setData((prevData) => [...prevData, e.data]);
     };
 
     eventSource.onerror = (e) => {
@@ -41,7 +40,6 @@ const KafkaClient: FC = () => {
 
     eventSource.addEventListener("message", (e) => {
       console.log("event source add event listener", e);
-      setData(e.data);
     });
 
     return () => {
