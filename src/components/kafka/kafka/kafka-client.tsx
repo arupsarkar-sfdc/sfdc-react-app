@@ -24,28 +24,7 @@ const KafkaClient: FC = () => {
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
-    const eventSource = new EventSource("/api/kafka/events");
-    eventSource.onmessage = (e) => {
-      console.log("event source", e);
-      setData((...prevData) => [...prevData, e.data]);
-    };
-
-    eventSource.onerror = (e) => {
-      console.log("event source error", e);
-    };
-
-    eventSource.onopen = (e) => {
-      console.log("event source open", e);
-    };
-
-    eventSource.addEventListener("message", (e) => {
-      console.log("event source add event listener", e);
-    });
-
-    return () => {
-      eventSource.close();
-    }
-  }, [data]);
+  }, []);
 
   const startProducer = async () => {
     try {
@@ -106,13 +85,44 @@ const KafkaClient: FC = () => {
   const fetchMessages = () => {
     //fetch the /api/kafka/fetchMessages endpoint
     console.log("fetch messages - start");
+    eventsListener();
     console.log("fetch messages - end");
-    fetch("/api/kafka/events")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("data", data);
-      })
-      .catch((error) => console.error(error));
+
+  };
+
+  const eventsListener = () => {
+    try {
+      const source = new EventSource(`/api/kafka/events`);
+      source.addEventListener(
+        "open",
+        () => {
+          console.log("Events stream opened!");
+        },
+        false
+      );
+
+      source.addEventListener(
+        "message",
+        (e: any) => {
+          console.log("Events payload received ", e.data);
+          setData(e.data);
+        },
+        false
+      );
+
+      source.addEventListener(
+        "error",
+        (e) => {
+          console.error("Error: ", e);
+        },
+        false
+      );
+      return () => {
+        source.close();
+      };
+    } catch (error) {
+      console.error("Error in platform event : ", error);
+    }
   };
 
   console.log(menu);
