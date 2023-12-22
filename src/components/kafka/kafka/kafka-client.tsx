@@ -88,7 +88,7 @@ const KafkaClient: FC = () => {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({message: msg})
+      body: JSON.stringify({message: {msg}})
     };
     fetch('/api/kafka/startProducer', requestOptions)
       .then(response => response.json())
