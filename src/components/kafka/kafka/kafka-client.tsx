@@ -27,7 +27,8 @@ const KafkaClient: FC = () => {
     const eventSource = new EventSource("/api/kafka/events");
     eventSource.onmessage = (e) => {
       console.log("event source", e);
-      setData((prevData: any) => [...prevData, e.data]);
+      //set the current data
+      setData(e.data);
     };
 
     eventSource.onerror = (e) => {
@@ -40,7 +41,6 @@ const KafkaClient: FC = () => {
 
     eventSource.addEventListener("message", (e) => {
       console.log("event source add event listener", e);
-      setData(e);
     });
 
     return () => {
