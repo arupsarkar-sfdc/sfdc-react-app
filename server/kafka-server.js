@@ -95,15 +95,15 @@ const startConsumer = async (req, res) => {
               })
               //store the message.value into the messages array
 
-              res.writeHead(200, {
-                'Content-Type': 'text/event-stream',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
-              });
-              setInterval(() => {
-                res.write(`data: ${JSON.stringify(message.value.toString())}\n\n`);
-              }
-              , 1000);
+              // res.writeHead(200, {
+              //   'Content-Type': 'text/event-stream',
+              //   'Cache-Control': 'no-cache',
+              //   'Connection': 'keep-alive',
+              // });
+              // setInterval(() => {
+              //   res.write(`data: ${JSON.stringify(message.value.toString())}\n\n`);
+              // }
+              // , 1000);
 
             },
           })
