@@ -489,23 +489,23 @@ app.get("/api/kafka/stopConsumer", async (req, res) => {
     res.status(500).send("Error stopping consumer");
   }
 })
-// app.get("/api/kafka/produceMessage", async (req, res) => {
-//   try{
-//     //create a server side event and use the callback of startConsumer to send the message
-//     res.setHeader('Content-Type', 'text/event-stream');
-//     res.setHeader('Cache-Control', 'no-cache');
-//     res.setHeader('Connection', 'keep-alive');
+app.get("/api/kafka/events", async (req, res) => {
+  try{
+    //create a server side event and use the callback of startConsumer to send the message
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
 
-//     const sendEvent = (data) => {
-//       res.write(`data: ${JSON.stringify(data)}\n\n`);
+    const sendEvent = (data) => {
+      res.write(`data: ${JSON.stringify(data)}\n\n`);
     
-//     }
-//     await kafkaConsumer(sendEvent);
+    }
+    await kafka.startConsumer(sendEvent);
 
-//   }catch(error) {
-//     res.status(500).send("Error producing message");
-//   }
-// })
+  }catch(error) {
+    res.status(500).send("Error producing message");
+  }
+})
 //kafka orchestration api end points - END
 
 app.listen(port, function () {
