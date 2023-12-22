@@ -38,7 +38,7 @@ const checkx509Certificate = async () => {
   
         
 
-const startConsumer = async (req, res) => {
+const startConsumer = async (callback) => {
     try{
 
         //create a string array of the message variable
@@ -94,7 +94,7 @@ const startConsumer = async (req, res) => {
                 topic: topic,
               })
               //store the message.value into the messages array
-              messages.push(message.value.toString());
+              callback(message.value.toString())
             },
           })
           .then(() => {

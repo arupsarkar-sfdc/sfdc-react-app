@@ -24,7 +24,27 @@ const KafkaClient: FC = () => {
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
-    console.log("useEffect");
+    const eventSource = new EventSource("/api/kafka/produceMessage");
+    eventSource.onmessage = (e) => {
+      console.log("event source", e);
+      setData((prevData: any) => [...prevData, e.data]);
+    };
+
+    eventSource.onerror = (e) => {
+      console.log("event source error", e);
+    };
+
+    eventSource.onopen = (e) => {
+      console.log("event source open", e);
+    };
+
+    eventSource.addEventListener("message", (e) => {
+      console.log("event source add event listener", e);
+    });
+
+    return () => {
+      eventSource.close();
+    }
   }, []);
 
   const startProducer = async () => {
@@ -47,28 +67,6 @@ const KafkaClient: FC = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log("data", data);
-        //listen to the event source and update the state
-        const eventSource = new EventSource("/api/kafka/startConsumer");
-        eventSource.onmessage = (e) => {
-          console.log("event source", e);
-          setData((prevData: any) => [...prevData, e.data]);
-        };
-
-        eventSource.onerror = (e) => {
-          console.log("event source error", e);
-        };
-
-        eventSource.onopen = (e) => {
-          console.log("event source open", e);
-        };
-
-        eventSource.addEventListener("message", (e) => {
-          console.log("event source add event listener", e);
-        });
-
-        return () => {
-          eventSource.close();
-        }
       })
       .catch((error) => console.error(error));
   };
@@ -202,6 +200,7 @@ const KafkaClient: FC = () => {
                       fullWidth
                       rows={4}
                       defaultValue="Kafka streams output"
+                      value={data}
                     />
                   </Grid>
                 </Grid>                
