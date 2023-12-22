@@ -84,23 +84,18 @@ const KafkaClient: FC = () => {
 
   const publishMessages = async () => {
     //fetch the /api/kafka/publishMessages endpoint
-    console.log("publish messages - start");
+    console.log("publish messages - start", msg);
     const response = await fetch("/api/kafka/startProducer", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({msg}),
+      body: msg,
     });
     const data = await response.json();
     console.log("data", data);    
     console.log("publish messages - end");
-    // fetch("/api/kafka/publishMessages")
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     console.log("data", data);
-    //   })
-    //   .catch((error) => console.error(error));
+
   };
 
   const fetchMessages = () => {
@@ -193,7 +188,11 @@ const KafkaClient: FC = () => {
                       fullWidth
                       rows={4}
                       defaultValue="Kafka streams payload"
-                      onChange={(e) => setMsg(e.target.value)}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        console.log("e.target.value", e.target.value);
+                        setMsg(e.target.value)
+                      }}
                     />
                   </Grid>
                 </Grid>
