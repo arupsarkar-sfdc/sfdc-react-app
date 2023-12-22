@@ -90,7 +90,7 @@ const KafkaClient: FC = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: msg,
+      body: JSON.stringify({message: msg}),
     });
     const data = await response.json();
     console.log("data", data);    
