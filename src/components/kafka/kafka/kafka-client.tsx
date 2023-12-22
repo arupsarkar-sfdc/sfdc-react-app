@@ -193,6 +193,7 @@ const KafkaClient: FC = () => {
                       fullWidth
                       rows={4}
                       defaultValue="Kafka streams payload"
+                      onChange={(e) => setMsg(e.target.value)}
                     />
                   </Grid>
                 </Grid>
