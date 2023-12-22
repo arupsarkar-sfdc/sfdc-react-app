@@ -16,12 +16,16 @@ import {
   Tooltip,
 } from "@mui/material";
 
-//create a interface data type for the env variables
+//create a interface data type for a simple message payload
+interface Message {
+  msg: string;
+}
+
 
 const KafkaClient: FC = () => {
   const { menu } = useMenuGlobalContext();
   const [data, setData] = useState<any[]>([]);
-  const [msg, setMsg] = useState<string>(""); 
+  const [msg, setMsg] = useState<Message>({msg: "default message"}); 
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
@@ -84,11 +88,14 @@ const KafkaClient: FC = () => {
 
   const publishMessages = async () => {
     //fetch the /api/kafka/publishMessages endpoint
-    console.log("publish messages - start", msg);
+    console.log("publish messages - start", JSON.stringify(msg));
+    //create a JSON with the message payload
+
+
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({message: {msg}})
+      body: JSON.stringify(msg)
     };
     fetch('/api/kafka/startProducer', requestOptions)
       .then(response => response.json())
@@ -205,7 +212,7 @@ const KafkaClient: FC = () => {
                       onChange={(e) => {
                         e.preventDefault();
                         console.log("e.target.value", e.target.value);
-                        setMsg(e.target.value)
+                        setMsg({msg: e.target.value});
                       }}
                     />
                   </Grid>
