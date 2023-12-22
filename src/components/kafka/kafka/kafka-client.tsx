@@ -85,14 +85,28 @@ const KafkaClient: FC = () => {
   const publishMessages = async () => {
     //fetch the /api/kafka/publishMessages endpoint
     console.log("publish messages - start", msg);
-    const response = await fetch("/api/kafka/startProducer", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({message: msg}),
-    });
-    const data = await response.json();
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({message: msg})
+    };
+    fetch('/api/kafka/startProducer', requestOptions)
+      .then(response => response.json())
+      .then(data => console.log("data", data))
+      .catch((error) => console.error(error))
+      .finally(() => {
+        console.log("Events fetch complete");
+      });
+
+    
+    // const response = await fetch("/api/kafka/startProducer", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({message: msg}),
+    // });
+    // const data = await response.json();
     console.log("data", data);    
     console.log("publish messages - end");
 
