@@ -40,12 +40,13 @@ const KafkaClient: FC = () => {
 
     eventSource.addEventListener("message", (e) => {
       console.log("event source add event listener", e);
+      setData(e);
     });
 
     return () => {
       eventSource.close();
     }
-  }, []);
+  }, [data]);
 
   const startProducer = async () => {
     try {
@@ -101,6 +102,18 @@ const KafkaClient: FC = () => {
     //     console.log("data", data);
     //   })
     //   .catch((error) => console.error(error));
+  };
+
+  const fetchMessages = () => {
+    //fetch the /api/kafka/fetchMessages endpoint
+    console.log("fetch messages - start");
+    console.log("fetch messages - end");
+    fetch("/api/kafka/events")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+      })
+      .catch((error) => console.error(error));
   };
 
   console.log(menu);
@@ -204,6 +217,18 @@ const KafkaClient: FC = () => {
                     />
                   </Grid>
                 </Grid>                
+                <Grid container spacing={1}>
+                  <Grid xs={12}>
+                    <Button
+                      onClick={fetchMessages}
+                      size="small"
+                      variant="outlined"
+                      sx={{ mt: 2 }}
+                    >
+                      Fetch Messages
+                    </Button>
+                  </Grid>
+                </Grid>
               </Box>
             </Grid>
           </Grid>
