@@ -454,7 +454,7 @@ app.get('/unifiedprofile', (req, res) => {
 });
 //kafka orchestration api end points - START
 const kafka = require('./kafka-server');
-const kafkaConsumer = require('./kafka-consumer');
+// const kafkaConsumer = require('./kafka-consumer');
 app.get("/api/kafka/startProducer", async (req, res) => {
   try{
     await kafka.startProducer();
@@ -475,7 +475,7 @@ app.get("/api/kafka/stopProducer", async (req, res) => {
   
 app.get("/api/kafka/startConsumer", async (req, res) => {
   try{
-    await kafka.startConsumer();
+    await kafka.startConsumer(req, res);
     res.status(200).send({ message: "consumer started" });
   }catch(error) {
     res.status(500).send("Error starting consumer");
@@ -489,23 +489,23 @@ app.get("/api/kafka/stopConsumer", async (req, res) => {
     res.status(500).send("Error stopping consumer");
   }
 })
-app.get("/api/kafka/produceMessage", async (req, res) => {
-  try{
-    //create a server side event and use the callback of startConsumer to send the message
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
+// app.get("/api/kafka/produceMessage", async (req, res) => {
+//   try{
+//     //create a server side event and use the callback of startConsumer to send the message
+//     res.setHeader('Content-Type', 'text/event-stream');
+//     res.setHeader('Cache-Control', 'no-cache');
+//     res.setHeader('Connection', 'keep-alive');
 
-    const sendEvent = (data) => {
-      res.write(`data: ${JSON.stringify(data)}\n\n`);
+//     const sendEvent = (data) => {
+//       res.write(`data: ${JSON.stringify(data)}\n\n`);
     
-    }
-    await kafkaConsumer(sendEvent);
+//     }
+//     await kafkaConsumer(sendEvent);
 
-  }catch(error) {
-    res.status(500).send("Error producing message");
-  }
-})
+//   }catch(error) {
+//     res.status(500).send("Error producing message");
+//   }
+// })
 //kafka orchestration api end points - END
 
 app.listen(port, function () {

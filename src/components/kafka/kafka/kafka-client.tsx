@@ -24,7 +24,7 @@ const KafkaClient: FC = () => {
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
-    const eventSource = new EventSource("/api/kafka/produceMessage");
+    const eventSource = new EventSource("/api/kafka/startConsumer");
     eventSource.onmessage = (e) => {
       console.log("event source", e);
       setData((prevData: any) => [...prevData, e.data]);
