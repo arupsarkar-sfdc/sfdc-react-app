@@ -147,7 +147,7 @@ const stopConsumer = async () => {
 }
             
 
-const startProducer = async (req, res) => {
+const startProducer = async (message) => {
     try{
 
         const kafka = await setupKafka();
@@ -161,9 +161,9 @@ const startProducer = async (req, res) => {
             Group: 'pearl-3815.dc-streaming',
             messages: [
               //attach a todays date with locale to the message
-              { key: new Date().toLocaleString(), value: new Date().toLocaleString() + ' Hello KafkaJS user! ' + Math.random() },
-              { key: new Date().toLocaleString(), value: new Date().toLocaleString() + ' Hello KafkaJS user! ' + Math.random()},
-              { key: new Date().toLocaleString(), value: new Date().toLocaleString() + ' Hello KafkaJS user! ' + Math.random()},
+              { key: new Date().toLocaleString(), value: message},
+              // { key: new Date().toLocaleString(), value: new Date().toLocaleString() + ' Hello KafkaJS user! ' + Math.random()},
+              // { key: new Date().toLocaleString(), value: new Date().toLocaleString() + ' Hello KafkaJS user! ' + Math.random()},
             ],
           })
           .then((data) => {

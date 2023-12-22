@@ -20,7 +20,8 @@ import {
 
 const KafkaClient: FC = () => {
   const { menu } = useMenuGlobalContext();
-  const [data, setData] = useState<any[]>([]); 
+  const [data, setData] = useState<any[]>([]);
+  const [msg, setMsg] = useState<string>(""); 
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
@@ -29,12 +30,23 @@ const KafkaClient: FC = () => {
   const startProducer = async () => {
     try {
       console.log("start producer - kafka ");
-      fetch("/api/kafka/startProducer")
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("data", data);
-        })
-        .catch((error) => console.error(error));
+      const response = await fetch("/api/kafka/startProducer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({msg}),
+      });
+      const data = await response.json();
+      console.log("data", data);
+
+
+      // fetch("/api/kafka/startProducer")
+      //   .then((res) => res.json())
+      //   .then((data) => {
+      //     console.log("data", data);
+      //   })
+      //   .catch((error) => console.error(error));
     } catch (error) {
       console.error("producer error --> ", error);
     }
@@ -70,9 +82,18 @@ const KafkaClient: FC = () => {
       .catch((error) => console.error(error));
   };
 
-  const publishMessages = () => {
+  const publishMessages = async () => {
     //fetch the /api/kafka/publishMessages endpoint
     console.log("publish messages - start");
+    const response = await fetch("/api/kafka/startProducer", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({msg}),
+    });
+    const data = await response.json();
+    console.log("data", data);    
     console.log("publish messages - end");
     // fetch("/api/kafka/publishMessages")
     //   .then((res) => res.json())
@@ -141,14 +162,14 @@ const KafkaClient: FC = () => {
               <Box sx={{ p: 2, border: 1, borderColor: "grey.500" }}>
                 <Grid container spacing={2}>
                   <Grid xs={6}>
-                    <Button
+                    {/* <Button
                       onClick={startProducer}
                       size="small"
                       variant="contained"
                       sx={{ mt: 2 }}
                     >
                       Start Producer
-                    </Button>
+                    </Button> */}
                   </Grid>
 
                   <Grid xs={6}>
@@ -193,14 +214,14 @@ const KafkaClient: FC = () => {
               <Box sx={{ p: 2, border: 1, borderColor: "grey.500" }}>
                 <Grid container spacing={2}>
                   <Grid xs={6}>
-                    <Button
+                    {/* <Button
                       onClick={startConsumer}
                       size="small"
                       variant="contained"
                       sx={{ mt: 2 }}
                     >
                       Start Consumer
-                    </Button>
+                    </Button> */}
                   </Grid>
 
                   <Grid xs={6}>
