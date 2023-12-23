@@ -51,6 +51,7 @@ const port = process.env.PORT || 3000;
 const DIST_DIR = path.join(__dirname, "../dist"); // NEW
 const HTML_FILE = path.join(DIST_DIR, "index.html"); // NEW
 
+app.use(express.json());
 // Enable server-side sessions
 app.use(
   session({
@@ -459,7 +460,7 @@ app.get("/api/kafka/startProducer", async (req, res) => {
   try{
     logger.info(`message from client 1 - ${req.query.payload}`)
     const  message  = req.query.payload;
-    console.log("message from client 2 ---> ", JSON.stringify(message));
+    console.log("message from client 2 ---> ", message);
     await kafka.startProducer(JSON.stringify(req.query.payload));
     res.status(200).send({ message: "Data received successfully" });
   }catch(error) {
@@ -503,11 +504,11 @@ app.get("/api/kafka/events", async (req, res) => {
       //check if the data is a json object & not undefined or null
 
       if(data) {
-        console.log("data from kafka consumer trigger SSE ---> ", JSON.stringify(data));
-        res.write(`data: ${JSON.stringify(data)}`);
+        console.log("data from kafka consumer trigger SSE ---> ", data);
+        res.write(`data: ${data}`);
       }else {
         console.log(`data is not defined`)
-        
+
       }
 
     

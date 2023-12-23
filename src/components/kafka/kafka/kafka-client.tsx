@@ -25,7 +25,7 @@ interface Message {
 const KafkaClient: FC = () => {
   const { menu } = useMenuGlobalContext();
   const [data, setData] = useState<Message>();
-  const [msg, setMsg] = useState<Message>({msg: "default message"}); 
+  const [msg, setMsg] = useState<String>(""); 
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
@@ -87,10 +87,12 @@ const KafkaClient: FC = () => {
   };
 
   const publishMessages = async () => {
+    //parse the json payload
+    const payload = JSON.parse(msg.toString());
     //fetch the /api/kafka/publishMessages endpoint
     console.log("publish messages - start", JSON.stringify(msg));
     //create a JSON with the message payload
-    fetch(`/api/kafka/startProducer?payload=${msg}`, {
+    fetch(`/api/kafka/startProducer?payload=${payload}`, {
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => {
@@ -220,7 +222,7 @@ const KafkaClient: FC = () => {
                       onChange={(e) => {
                         e.preventDefault();
                         console.log("e.target.value", e.target.value);
-                        setMsg({msg: e.target.value});
+                        setMsg(e.target.value);
                       }}
                     />
                   </Grid>
