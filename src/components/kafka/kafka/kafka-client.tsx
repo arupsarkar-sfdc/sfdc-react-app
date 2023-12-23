@@ -24,7 +24,7 @@ interface Message {
 
 const KafkaClient: FC = () => {
   const { menu } = useMenuGlobalContext();
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<string>();
   const [msg, setMsg] = useState<Message>({msg: "default message"}); 
 
   useEffect(() => {
@@ -102,7 +102,11 @@ const KafkaClient: FC = () => {
       })
       .then((data) => {
         console.log("Publisg message submitted response : ", JSON.stringify(data));
-        setData(data);
+        data.replace(/\\/g, "")
+        // setData(JSON.stringify(data).replace(/\\/g, ""));
+        //also format it with indentation
+        setData(JSON.stringify(data, null, 2));
+
       })
       .catch((error) => {
         console.error(error);
