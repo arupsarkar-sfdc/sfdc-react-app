@@ -93,7 +93,9 @@ const startConsumer = async (callback) => {
                 timestamp: message.timestamp,
                 topic: topic,
               })
+              console.log(`Start - Sending payload to callback to initiate server side event to client ${message.value.toString()}`)
               callback(message.value.toString());
+              console.log(`End - Sending payload to callback to initiate server side event to client`)
 
               //store the message.value into the messages array
 

@@ -500,7 +500,16 @@ app.get("/api/kafka/events", async (req, res) => {
     res.setHeader('Connection', 'keep-alive');
 
     const sendEvent = (data) => {
-      res.write(`data: ${JSON.stringify(data)}`);
+      //check if the data is a json object & not undefined or null
+
+      if(data) {
+        console.log("data from kafka consumer trigger SSE ---> ", JSON.stringify(data));
+        res.write(`data: ${JSON.stringify(data)}`);
+      }else {
+        console.log(`data is not defined`)
+        
+      }
+
     
     }
     await kafka.startConsumer(sendEvent);

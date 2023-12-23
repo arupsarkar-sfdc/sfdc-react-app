@@ -31,40 +31,40 @@ const KafkaClient: FC = () => {
     //call the server '/api/env to get the env variables using fetch
   }, []);
 
-  const startProducer = async () => {
-    try {
-      console.log("start producer - kafka ");
-      const response = await fetch("/api/kafka/startProducer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({msg}),
-      });
-      const data = await response.json();
-      console.log("data", data);
+  // const startProducer = async () => {
+  //   try {
+  //     console.log("start producer - kafka ");
+  //     const response = await fetch("/api/kafka/startProducer", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({msg}),
+  //     });
+  //     const data = await response.json();
+  //     console.log("data", data);
 
 
-      // fetch("/api/kafka/startProducer")
-      //   .then((res) => res.json())
-      //   .then((data) => {
-      //     console.log("data", data);
-      //   })
-      //   .catch((error) => console.error(error));
-    } catch (error) {
-      console.error("producer error --> ", error);
-    }
-  };
+  //     // fetch("/api/kafka/startProducer")
+  //     //   .then((res) => res.json())
+  //     //   .then((data) => {
+  //     //     console.log("data", data);
+  //     //   })
+  //     //   .catch((error) => console.error(error));
+  //   } catch (error) {
+  //     console.error("producer error --> ", error);
+  //   }
+  // };
 
-  const startConsumer = () => {
-    //fetch the /api/kafka/startConsumer endpoint
-    fetch("/api/kafka/startConsumer")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("data", data);
-      })
-      .catch((error) => console.error(error));
-  };
+  // const startConsumer = () => {
+  //   //fetch the /api/kafka/startConsumer endpoint
+  //   fetch("/api/kafka/startConsumer")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log("data", data);
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
 
   const stopConsumer = () => {
     //fetch the /api/kafka/stopConsumer endpoint
@@ -90,7 +90,7 @@ const KafkaClient: FC = () => {
     //fetch the /api/kafka/publishMessages endpoint
     console.log("publish messages - start", JSON.stringify(msg));
     //create a JSON with the message payload
-    fetch(`/api/kafka/startProducer?payload=${JSON.stringify(msg)}`, {
+    fetch(`/api/kafka/startProducer?payload=${msg}`, {
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => {
