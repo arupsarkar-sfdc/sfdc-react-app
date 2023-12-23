@@ -455,10 +455,10 @@ app.get('/unifiedprofile', (req, res) => {
 //kafka orchestration api end points - START
 const kafka = require('./kafka-server');
 // const kafkaConsumer = require('./kafka-consumer');
-app.post("/api/kafka/startProducer", async (req, res) => {
+app.get("/api/kafka/startProducer", async (req, res) => {
   try{
-    console.log("message from client 1 ---> ", JSON.stringify(req.body));
-    const { message } = req.body;
+    logger.info(`message from client 1 - ${req.query.payload}`)
+    const { message } = req.query.payload;
     console.log("message from client 2 ---> ", JSON.stringify(message));
     await kafka.startProducer(JSON.stringify(message));
     res.status(200).send({ message: "Data received successfully" });

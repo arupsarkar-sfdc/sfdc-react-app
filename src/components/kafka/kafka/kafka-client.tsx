@@ -90,30 +90,26 @@ const KafkaClient: FC = () => {
     //fetch the /api/kafka/publishMessages endpoint
     console.log("publish messages - start", JSON.stringify(msg));
     //create a JSON with the message payload
-
-
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(msg)
-    };
-    fetch('/api/kafka/startProducer', requestOptions)
-      .then(response => response.json())
-      .then(data => console.log("data", data))
-      .catch((error) => console.error(error))
+    fetch(`/api/kafka/startProducer?payload=${JSON.stringify(msg)}`, {
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => {
+        if (res.ok) {
+          console.log("Raw response : ", JSON.stringify(res));
+          return res.json();
+        }
+        throw res;
+      })
+      .then((data) => {
+        console.log("Publisg message submitted response : ", JSON.stringify(data));
+        setData(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
       .finally(() => {
-        console.log("Events fetch complete");
+        console.log("Published messages complete");
       });
-
-    
-    // const response = await fetch("/api/kafka/startProducer", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({message: msg}),
-    // });
-    // const data = await response.json();
     console.log("data", data);    
     console.log("publish messages - end");
 
@@ -217,6 +213,7 @@ const KafkaClient: FC = () => {
                     />
                   </Grid>
                 </Grid>
+
                 <Grid container spacing={1}>
                   <Grid xs={12}>
                     <Button
