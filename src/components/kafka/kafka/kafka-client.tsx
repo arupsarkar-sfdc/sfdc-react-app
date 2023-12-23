@@ -147,12 +147,12 @@ const KafkaClient: FC = () => {
           //also make the json formatted with indentation
                     
 
-          let data =[];
-          //data.push(e.data);
-          data.push(JSON.stringify(value, null, 2));
-          console.log("Events payload received ", data);
+          // let data =[];
+          // //data.push(e.data);
+          // data.push(JSON.stringify(value, null, 2));
+          console.log("Events payload received ", e.data.toString().replace(/\\/g, ""));
           //setData((data) => [...data, value]);
-          setData(JSON.parse(data.toString()));
+          setData(JSON.parse(e.data.toString().replace(/\\/g, "")));
         },
         false
       );
