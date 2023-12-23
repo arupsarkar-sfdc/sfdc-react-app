@@ -142,10 +142,15 @@ const KafkaClient: FC = () => {
         "message",
         (e: any) => {
           const value = JSON.stringify(e.data);
+          //remove all backslashes from the string
+          value.replace(/\\/g, "");
+          //also make the json formatted with indentation
+                    
+
           let data =[];
           //data.push(e.data);
-          data.push(value);
-          console.log("Events payload received ", value);
+          data.push(JSON.stringify(value, null, 2));
+          console.log("Events payload received ", data);
           //setData((data) => [...data, value]);
           setData(data.toString());
         },
