@@ -500,7 +500,7 @@ app.get("/api/kafka/events", async (req, res) => {
     res.setHeader('Connection', 'keep-alive');
 
     const sendEvent = (data) => {
-      res.write(`data: ${JSON.stringify(data)}\n\n`);
+      res.write(`data: ${JSON.stringify(data)}`);
     
     }
     await kafka.startConsumer(sendEvent);
