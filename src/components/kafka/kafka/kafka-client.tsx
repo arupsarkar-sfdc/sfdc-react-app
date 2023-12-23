@@ -146,7 +146,8 @@ const KafkaClient: FC = () => {
           //data.push(e.data);
           data.push(value);
           console.log("Events payload received ", value);
-          setData((data) => [...data, value]);
+          //setData((data) => [...data, value]);
+          setData(data.toString());
         },
         false
       );
