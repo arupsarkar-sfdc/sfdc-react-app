@@ -137,10 +137,12 @@ const KafkaClient: FC = () => {
       source.addEventListener(
         "message",
         (e: any) => {
+          const value = JSON.stringify(e.data);
           let data =[];
-          data.push(e.data);
-          console.log("Events payload received ", e.data);
-          setData((data) => [...data, e.data]);
+          //data.push(e.data);
+          data.push(value);
+          console.log("Events payload received ", value);
+          setData((data) => [...data, value]);
         },
         false
       );
