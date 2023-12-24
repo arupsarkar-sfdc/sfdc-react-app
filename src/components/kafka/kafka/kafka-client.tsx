@@ -273,7 +273,6 @@ const KafkaClient: FC = () => {
                   <Grid xs={12}>
                     <TextField
                       id="outlined-multiline-static"
-                      label="Output"
                       multiline
                       fullWidth
                       rows={4}
