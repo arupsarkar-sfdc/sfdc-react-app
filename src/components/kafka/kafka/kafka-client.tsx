@@ -25,7 +25,7 @@ interface Message {
 const KafkaClient: FC = () => {
   const { menu } = useMenuGlobalContext();
   const [data, setData] = useState<Message>();
-  const [msg, setMsg] = useState<String>(""); 
+  const [msg, setMsg] = useState<string>(""); 
 
   useEffect(() => {
     //call the server '/api/env to get the env variables using fetch
@@ -88,7 +88,7 @@ const KafkaClient: FC = () => {
 
   const publishMessages = async () => {
     //parse the json payload
-    const payload = JSON.parse(msg.toString());
+    const payload = JSON.parse(msg);
     //fetch the /api/kafka/publishMessages endpoint
     console.log("publish messages - start", JSON.stringify(msg));
     //create a JSON with the message payload
