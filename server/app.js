@@ -460,11 +460,11 @@ app.get("/api/kafka/startProducer", async (req, res) => {
   try{
     //parse the req.body.payload to a string
     const payload = JSON.parse(req.query.payload);
-    const message = payload['msg']
     // const payload = JSON.stringify(JSON.parse(req.query.payload));
-    logger.info(`message from client  - ${message}`)
-    await kafka.startProducer(message);
-    res.status(200).send({ message: message });
+    logger.info(`message from client  - ${JSON.stringify(payload)}`)
+    logger.info(`message from client  - ${payload['msg']}`)
+    await kafka.startProducer(payload['msg']);
+    res.status(200).send({ msg: payload['msg'] });
   }catch(error) {
     res.status(500).send("Error starting producer");
   
