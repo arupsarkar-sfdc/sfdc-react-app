@@ -103,11 +103,11 @@ const KafkaClient: FC = () => {
         throw res;
       })
       .then((data) => {
-        console.log("Publisg message submitted response : ", JSON.stringify(data));
-        data.replace(/\\/g, "")
+        console.log("Publish message submitted response : ", JSON.stringify(data));
+        // data.replace(/\\/g, "")
         // setData(JSON.stringify(data).replace(/\\/g, ""));
         //also format it with indentation
-        setData(data.toString());
+        //setData(data.toString());
 
       })
       .catch((error) => {
