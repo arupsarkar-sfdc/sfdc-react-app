@@ -277,7 +277,7 @@ const KafkaClient: FC = () => {
                       fullWidth
                       rows={4}
                       defaultValue="Kafka streams output"
-                      value={data}
+                      value={JSON.stringify(data)}
                     />
                   </Grid>
                 </Grid>                
