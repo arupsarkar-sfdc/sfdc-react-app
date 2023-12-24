@@ -498,16 +498,23 @@ app.get("/api/kafka/stopConsumer", async (req, res) => {
 app.get("/api/kafka/events", async (req, res) => {
   try{
     //create a server side event and use the callback of startConsumer to send the message
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
+    // res.setHeader('Content-Type', 'text/event-stream');
+    // res.setHeader('Cache-Control', 'no-cache');
+    // res.setHeader('Connection', 'keep-alive');
+
+    res.writeHead(200, {
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+      "Content-Type": "text/event-stream",
+    });
+    res.flushHeaders();    
 
     const sendEvent = (data) => {
       //check if the data is a json object & not undefined or null
 
       if(data) {
         console.log("data from kafka consumer trigger SSE ---> ", data);
-        res.write(`data: ${data} \n`);
+        res.write(`data: ${data}\n\n`);        
       }else {
         console.log(`data is not defined`)
 

@@ -116,7 +116,6 @@ const KafkaClient: FC = () => {
       .finally(() => {
         console.log("Published messages complete");
       });
-    console.log("data", data);    
     console.log("publish messages - end");
 
   };
