@@ -507,7 +507,7 @@ app.get("/api/kafka/events", async (req, res) => {
 
       if(data) {
         console.log("data from kafka consumer trigger SSE ---> ", data);
-        res.write(`data: ${data}`);
+        res.write(`data: ${data} \n`);
       }else {
         console.log(`data is not defined`)
 
