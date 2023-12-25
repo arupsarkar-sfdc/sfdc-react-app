@@ -143,18 +143,6 @@ const KafkaClient: FC = () => {
         "message",
         (e: any) => {
           console.log("Events payload received ", e.data);
-          //const value = e.data;
-          //remove all backslashes from the string
-          // value.replace(/\\/g, "");
-          //also make the json formatted with indentation
-                    
-
-          // let data =[];
-          // //data.push(e.data);
-          // data.push(JSON.stringify(value, null, 2));
-          // console.log("Events payload received ", e.data.toString().replace(/\\/g, ""));
-          //setData((data) => [...data, value]);
-          //setData(JSON.parse(e.data.toString().replace(/\\/g, "")));
           setData(e.data)
         },
         false
@@ -175,6 +163,7 @@ const KafkaClient: FC = () => {
     }
   };
 
+
   console.log(menu);
   return (
     <div>
@@ -187,28 +176,18 @@ const KafkaClient: FC = () => {
                 {new Date().toLocaleString()}
               </InputLabel>
               <Box sx={{ p: 2, border: 1, borderColor: "grey.500" }}>
-                <Grid container spacing={2}>
-                  <Grid xs={6}>
-                    {/* <Button
-                      onClick={startProducer}
-                      size="small"
-                      variant="contained"
-                      sx={{ mt: 2 }}
+                <Grid container spacing={1}>
+                  <Grid 
+                    xs={12}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
                     >
-                      Start Producer
-                    </Button> */}
-                  </Grid>
-
-                  <Grid xs={6}>
-                    <Button
-                      onClick={stopProducer}
-                      size="small"
-                      variant="contained"
-                      color="error"
-                      sx={{ mt: 2 }}
-                    >
-                      Stop Producer
-                    </Button>
+                    <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                      Kafka Message Producer
+                    </InputLabel>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
@@ -229,8 +208,8 @@ const KafkaClient: FC = () => {
                   </Grid>
                 </Grid>
 
-                <Grid container spacing={1}>
-                  <Grid xs={12}>
+                <Grid container spacing={2}>
+                  <Grid xs={6}>
                     <Button
                       onClick={publishMessages}
                       size="small"
@@ -240,33 +219,33 @@ const KafkaClient: FC = () => {
                       Publish Messages
                     </Button>
                   </Grid>
-                </Grid>
-              </Box>
-              
-
-              <Box sx={{ p: 2, border: 1, borderColor: "grey.500" }}>
-                <Grid container spacing={2}>
-                  <Grid xs={6}>
-                    {/* <Button
-                      onClick={startConsumer}
-                      size="small"
-                      variant="contained"
-                      sx={{ mt: 2 }}
-                    >
-                      Start Consumer
-                    </Button> */}
-                  </Grid>
-
                   <Grid xs={6}>
                     <Button
-                      onClick={stopConsumer}
+                      onClick={stopProducer}
                       size="small"
                       variant="contained"
                       color="error"
                       sx={{ mt: 2 }}
                     >
-                      Stop Consumer
+                      Stop Producer
                     </Button>
+                  </Grid>                  
+                </Grid>
+              </Box>
+              
+
+              <Box sx={{ p: 2, border: 1, borderColor: "grey.500" }}>
+                <Grid container spacing={1}>
+                  <Grid xs={12}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}                  
+                  >
+                    <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                      Kafka Message Listener
+                    </InputLabel>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
@@ -281,8 +260,8 @@ const KafkaClient: FC = () => {
                     />
                   </Grid>
                 </Grid>                
-                <Grid container spacing={1}>
-                  <Grid xs={12}>
+                <Grid container spacing={2}>
+                  <Grid xs={6}>
                     <Button
                       onClick={fetchMessages}
                       size="small"
@@ -292,6 +271,17 @@ const KafkaClient: FC = () => {
                       Fetch Messages
                     </Button>
                   </Grid>
+                  <Grid xs={6}>
+                    <Button
+                      onClick={stopConsumer}
+                      size="small"
+                      variant="contained"
+                      color="error"
+                      sx={{ mt: 2 }}
+                    >
+                      Stop Consumer
+                    </Button>
+                  </Grid>                  
                 </Grid>
               </Box>
             </Grid>
