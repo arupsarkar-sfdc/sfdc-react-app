@@ -28,43 +28,10 @@ const KafkaClient: FC = () => {
   const [msg, setMsg] = useState<Message>({msg: ""}); 
 
   useEffect(() => {
-    //call the server '/api/env to get the env variables using fetch
+    console.log('KafkaClient - useEffect - start');
+    console.log('KafkaClient - useEffect - end');
   }, []);
 
-  // const startProducer = async () => {
-  //   try {
-  //     console.log("start producer - kafka ");
-  //     const response = await fetch("/api/kafka/startProducer", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({msg}),
-  //     });
-  //     const data = await response.json();
-  //     console.log("data", data);
-
-
-  //     // fetch("/api/kafka/startProducer")
-  //     //   .then((res) => res.json())
-  //     //   .then((data) => {
-  //     //     console.log("data", data);
-  //     //   })
-  //     //   .catch((error) => console.error(error));
-  //   } catch (error) {
-  //     console.error("producer error --> ", error);
-  //   }
-  // };
-
-  // const startConsumer = () => {
-  //   //fetch the /api/kafka/startConsumer endpoint
-  //   fetch("/api/kafka/startConsumer")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log("data", data);
-  //     })
-  //     .catch((error) => console.error(error));
-  // };
 
   const stopConsumer = () => {
     //fetch the /api/kafka/stopConsumer endpoint
