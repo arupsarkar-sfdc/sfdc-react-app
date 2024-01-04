@@ -229,7 +229,7 @@ const sendEvent = (req, res) => {
   const conn = resumeSalesforceConnection(session);
   res.writeHead(200, {
     "Cache-Control": "no-cache",
-    Connection: "keep-alive",
+    "Connection": "keep-alive",
     "Content-Type": "text/event-stream",
   });
   const sseId = new Date().toDateString();
@@ -302,7 +302,7 @@ app.get("/api/events", async (req, res) => {
     logger.info(`Event to be tracked in server ${event_name[0].id}`);
     res.writeHead(200, {
       "Cache-Control": "no-cache",
-      Connection: "keep-alive",
+      "Connection": "keep-alive",
       "Content-Type": "text/event-stream",
     });
     res.flushHeaders();
@@ -504,7 +504,7 @@ app.get("/api/kafka/events", async (req, res) => {
 
     res.writeHead(200, {
       "Cache-Control": "no-cache",
-      Connection: "keep-alive",
+      "Connection": "keep-alive",
       "Content-Type": "text/event-stream",
     });
     res.flushHeaders();    
