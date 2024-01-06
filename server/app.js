@@ -209,13 +209,20 @@ app.get("/api/query", (req, res) => {
 app.get("/auth/token", async (req, res) => {
   try {
     if (req.headers.accept === "text/event-stream") {
-      if (session == null) {
-        console.log("session is null");
-        return;
+      const conn = resumeSalesforceConnection(session);
+      if (conn.accessToken) {
+        await sendEvent(req, res);
+      }else{
+        res.status(401).send("No active session");
+        return null;
       }
-      console.log("session is not null", "requesting token");  
-      const conn = resumeSalesforceConnection(session);      
-      await sendEvent(req, res);
+      // if (session == null) {
+      //   console.log("session is null");
+      //   return;
+      // }
+      // console.log("session is not null", "requesting token");  
+      // const conn = await resumeSalesforceConnection(session);      
+      // await sendEvent(req, res);
     }
   } catch (error) {
     logger.error(`Error accessing token : ${error}`);
