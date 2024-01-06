@@ -168,11 +168,14 @@ app.get("/auth/callback", (request, response) => {
     logger.info(`instance url from salesforce: ${conn.instanceUrl}`);
     logger.info(`refresh token from salesforce: ${conn.refreshToken}`);
     // Store oauth session data in server (never expose it directly to client)
+    logger.info(`session data from salesforce: ${JSON.stringify(conn)}`);
     request.session.sfdcAuth = {
       instanceUrl: conn.instanceUrl,
       accessToken: conn.accessToken,
       refreshToken: conn.refreshToken,
     };
+    logger.info(`session data from request: ${JSON.stringify(request.session)}`);
+    logger.info(`redirecting to /`);
     // Redirect to app main page
     return response.redirect("/");
   });
