@@ -209,6 +209,12 @@ app.get("/api/query", (req, res) => {
 app.get("/auth/token", async (req, res) => {
   try {
     if (req.headers.accept === "text/event-stream") {
+      if (session == null) {
+        console.log("session is null");
+        return;
+      }
+      console.log("session is not null", "requesting token");  
+      const conn = resumeSalesforceConnection(session);      
       await sendEvent(req, res);
     }
   } catch (error) {
@@ -222,11 +228,13 @@ const writeEvent = (res, sseId, data) => {
 };
 
 const sendEvent = (req, res) => {
-  const session = getSession(req, res);
-  if (session == null) {
-    return;
-  }
-  const conn = resumeSalesforceConnection(session);
+  // const session = getSession(req, res);
+  // if (session == null) {
+  //   console.log("session is null");
+  //   return;
+  // }
+  // console.log("session is not null", "requesting token");  
+  // const conn = resumeSalesforceConnection(session);
   res.writeHead(200, {
     "Cache-Control": "no-cache",
     "Connection": "keep-alive",
