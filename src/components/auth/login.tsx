@@ -72,7 +72,7 @@ const Login: FC = () => {
     } catch (error) {
       console.error("Error fetching server side events in login event ", error);
     }
-  }, []);
+  }, [logged]);
 
   return (
     <div>

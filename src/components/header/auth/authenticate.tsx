@@ -65,7 +65,7 @@ const Authenticate: FC = () => {
     } catch (error) {
       console.error("Error fetching server side events in login event ", error);
     }
-  }, []);
+  }, [auth]);
 
   return (
     <FormGroup>

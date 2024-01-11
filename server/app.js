@@ -168,14 +168,17 @@ app.get("/auth/callback", (request, response) => {
     logger.info(`instance url from salesforce: ${conn.instanceUrl}`);
     logger.info(`refresh token from salesforce: ${conn.refreshToken}`);
     // Store oauth session data in server (never expose it directly to client)
-    logger.info(`session data from salesforce: ${JSON.stringify(conn)}`);
+    logger.info(`setting session data from salesforce`, `Start`);
     request.session.sfdcAuth = {
       instanceUrl: conn.instanceUrl,
       accessToken: conn.accessToken,
       refreshToken: conn.refreshToken,
     };
-    logger.info(`session data from request: ${JSON.stringify(request.session)}`);
-    logger.info(`redirecting to /`);
+    logger.info(`setting session data from request`, `End`);
+    logger.info(`sending event stream`, `Start`);    
+    sendEvent(request, response);
+    logger.info(`sending event stream`, `End`);        
+
     // Redirect to app main page
     return response.redirect("/");
   });
@@ -211,22 +214,32 @@ app.get("/api/query", (req, res) => {
  */
 app.get("/auth/token", async (req, res) => {
   try {
-    if (req.headers.accept === "text/event-stream") {
-      const conn = resumeSalesforceConnection(session);
-      if (conn.accessToken) {
-        await sendEvent(req, res);
-      }else{
-        res.status(401).send("No active session");
-        return null;
-      }
-      // if (session == null) {
-      //   console.log("session is null");
-      //   return;
-      // }
-      // console.log("session is not null", "requesting token");  
-      // const conn = await resumeSalesforceConnection(session);      
-      // await sendEvent(req, res);
-    }
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    //res.flushHeaders();
+
+    req.on("close", () => {
+      logger.info("Client closed connection");
+    });
+
+      
+    // if (req.headers.accept === "text/event-stream") {
+    //   const conn = resumeSalesforceConnection(session);
+    //   if (conn.accessToken) {
+    //     await sendEvent(req, res);
+    //   }else{
+    //     res.status(401).send("No active session");
+    //     return null;
+    //   }
+    //   // if (session == null) {
+    //   //   console.log("session is null");
+    //   //   return;
+    //   // }
+    //   // console.log("session is not null", "requesting token");  
+    //   // const conn = await resumeSalesforceConnection(session);      
+    //   // await sendEvent(req, res);
+  // }
   } catch (error) {
     logger.error(`Error accessing token : ${error}`);
   }
@@ -238,18 +251,18 @@ const writeEvent = (res, sseId, data) => {
 };
 
 const sendEvent = (req, res) => {
-  // const session = getSession(req, res);
-  // if (session == null) {
-  //   console.log("session is null");
-  //   return;
-  // }
-  // console.log("session is not null", "requesting token");  
-  // const conn = resumeSalesforceConnection(session);
-  res.writeHead(200, {
-    "Cache-Control": "no-cache",
-    "Connection": "keep-alive",
-    "Content-Type": "text/event-stream",
-  });
+  // // const session = getSession(req, res);
+  // // if (session == null) {
+  // //   console.log("session is null");
+  // //   return;
+  // // }
+  // // console.log("session is not null", "requesting token");  
+  // // const conn = resumeSalesforceConnection(session);
+  // res.writeHead(200, {
+  //   "Cache-Control": "no-cache",
+  //   "Connection": "keep-alive",
+  //   "Content-Type": "text/event-stream",
+  // });
   const sseId = new Date().toDateString();
   if (conn.accessToken) {
     writeEvent(res, sseId, "LoggedIn");
