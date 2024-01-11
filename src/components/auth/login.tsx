@@ -32,43 +32,43 @@ const Login: FC = () => {
     try {
       console.log("Login - useEffect - start");
       console.log("Login - useEffect - end");
-      const source = new EventSource(`/auth/token`);
-      source.addEventListener(
-        "open",
-        () => {
-          console.log("SSE opened!");
-        },
-        false
-      );
+      // const source = new EventSource(`/auth/token`);
+      // source.addEventListener(
+      //   "open",
+      //   () => {
+      //     console.log("SSE opened!");
+      //   },
+      //   false
+      // );
 
-      source.addEventListener(
-        "message",
-        (e: any) => {
-          console.log("SSE payload received ", e.data);
-          if (e.data == "LoggedIn") {
-            console.log("Hide the login button", e.data == "LoggedIn");
-            setLogged(undefined);
-            setShowLogin(false);
-          } else if (e.data == "NotLoggedIn") {
-            console.log(
-              "Do not hide the login button",
-              e.data == "NotLoggedIn"
-            );
-            setShowLogin(true);
-          }
-        },
-        false
-      );
-      source.addEventListener(
-        "error",
-        (e) => {
-          console.error("Error: ", e);
-        },
-        false
-      );
-      return () => {
-        source.close();
-      };
+      // source.addEventListener(
+      //   "message",
+      //   (e: any) => {
+      //     console.log("SSE payload received ", e.data);
+      //     if (e.data == "LoggedIn") {
+      //       console.log("Hide the login button", e.data == "LoggedIn");
+      //       setLogged(undefined);
+      //       setShowLogin(false);
+      //     } else if (e.data == "NotLoggedIn") {
+      //       console.log(
+      //         "Do not hide the login button",
+      //         e.data == "NotLoggedIn"
+      //       );
+      //       setShowLogin(true);
+      //     }
+      //   },
+      //   false
+      // );
+      // source.addEventListener(
+      //   "error",
+      //   (e) => {
+      //     console.error("Error: ", e);
+      //   },
+      //   false
+      // );
+      // return () => {
+      //   source.close();
+      // };
     } catch (error) {
       console.error("Error fetching server side events in login event ", error);
     }
