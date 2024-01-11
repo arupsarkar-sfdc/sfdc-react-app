@@ -250,14 +250,14 @@ const writeEvent = (res, sseId, data) => {
   res.write(`data: ${data}\n\n`);
 };
 
-const sendEvent = (req, res) => {
+const sendEvent = async (req, res) => {
   // // const session = getSession(req, res);
   // // if (session == null) {
   // //   console.log("session is null");
   // //   return;
   // // }
   // // console.log("session is not null", "requesting token");  
-  // // const conn = resumeSalesforceConnection(session);
+  const conn = resumeSalesforceConnection(session);
   // res.writeHead(200, {
   //   "Cache-Control": "no-cache",
   //   "Connection": "keep-alive",
