@@ -77,7 +77,7 @@ function getSession(request, response) {
   return session;
 }
 
-function setSession(req, res) {
+function setSession(req, res, conn) {
   req.session.sfdcAuth = {
     instanceUrl: conn.instanceUrl,
     accessToken: conn.accessToken,
@@ -180,7 +180,7 @@ app.get("/auth/callback", async (request, response) => {
     logger.info(`refresh token from salesforce: ${conn.refreshToken}`);
     // Store oauth session data in server (never expose it directly to client)
     logger.info(`setting session data from salesforce`, `Start`);
-    const sess = await setSession(request, response)
+    const sess = await setSession(request, response, conn)
     logger.info(`Session info ${sJSON.stringify(sess)}`);
     // request.session.sfdcAuth = {
     //   instanceUrl: conn.instanceUrl,
