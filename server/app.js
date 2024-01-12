@@ -181,7 +181,7 @@ app.get("/auth/callback", async (request, response) => {
     // Store oauth session data in server (never expose it directly to client)
     logger.info(`setting session data from salesforce`, `Start`);
     const sess = await setSession(request, response, conn)
-    logger.info(`Session info ${sJSON.stringify(sess)}`);
+    logger.info(`Session info ${JSON.stringify(sess)}`);
     // request.session.sfdcAuth = {
     //   instanceUrl: conn.instanceUrl,
     //   accessToken: conn.accessToken,
