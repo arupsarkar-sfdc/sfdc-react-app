@@ -68,6 +68,7 @@ app.use(
  */
 function getSession(request, response) {
   const session = request.session;
+  logger.info(`session is ${session}`);
   if (!session.sfdcAuth) {
     response.status(401).send("No active session");
     return null;
