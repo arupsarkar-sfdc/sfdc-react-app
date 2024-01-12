@@ -176,7 +176,7 @@ app.get("/auth/callback", (request, response) => {
     };
     logger.info(`setting session data from request`, `End`);
     logger.info('Before sending event stream');    
-    sendEvent(request, response);
+    //sendEvent(request, response);
     logger.info('End of sending event stream');
 
     // Redirect to app main page
