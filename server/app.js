@@ -214,32 +214,33 @@ app.get("/api/query", (req, res) => {
  */
 app.get("/auth/token", async (req, res) => {
   try {
-    res.setHeader("Content-Type", "text/event-stream");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
+    // res.setHeader("Content-Type", "text/event-stream");
+    // res.setHeader("Cache-Control", "no-cache");
+    // res.setHeader("Connection", "keep-alive");
     //res.flushHeaders();
 
-    req.on("close", () => {
-      logger.info("Client closed connection");
-    });
+    // req.on("close", () => {
+    //   logger.info("Client closed connection");
+    // });
 
       
-    // if (req.headers.accept === "text/event-stream") {
-    //   const conn = resumeSalesforceConnection(session);
-    //   if (conn.accessToken) {
-    //     await sendEvent(req, res);
-    //   }else{
-    //     res.status(401).send("No active session");
-    //     return null;
-    //   }
-    //   // if (session == null) {
-    //   //   console.log("session is null");
-    //   //   return;
-    //   // }
-    //   // console.log("session is not null", "requesting token");  
-    //   // const conn = await resumeSalesforceConnection(session);      
-    //   // await sendEvent(req, res);
-  // }
+    if (req.headers.accept === "text/event-stream") {
+      const conn = resumeSalesforceConnection(session);
+      if (conn.accessToken) {
+        //await sendEvent(req, res);
+        console.log("sending token", conn.accessToken);
+      }else{
+        res.status(401).send("No active session");
+        return null;
+      }
+      // if (session == null) {
+      //   console.log("session is null");
+      //   return;
+      // }
+      // console.log("session is not null", "requesting token");  
+      // const conn = await resumeSalesforceConnection(session);      
+      // await sendEvent(req, res);
+    }
   } catch (error) {
     logger.error(`Error accessing token : ${error}`);
   }
@@ -258,11 +259,11 @@ const sendEvent = async (req, res) => {
   // // }
   // // console.log("session is not null", "requesting token");  
   //const conn = resumeSalesforceConnection(session);
-  // res.writeHead(200, {
-  //   "Cache-Control": "no-cache",
-  //   "Connection": "keep-alive",
-  //   "Content-Type": "text/event-stream",
-  // });
+  res.writeHead(200, {
+    "Cache-Control": "no-cache",
+    "Connection": "keep-alive",
+    "Content-Type": "text/event-stream",
+  });
   const sseId = new Date().toDateString();
   //if (conn.accessToken) {
     writeEvent(res, sseId, "LoggedIn");
