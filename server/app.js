@@ -225,7 +225,11 @@ app.get("/auth/token", async (req, res) => {
 
       
     if (req.headers.accept === "text/event-stream") {
+      logger.info(`Inside /auth/token - if clause`);
+      const session = await getSession(req, res);
+      logger.info(`session is ${session}`);
       const conn = resumeSalesforceConnection(session);
+      logger.info(`conn is ${conn}`);
       if (conn.accessToken) {
         console.log("sending token", conn.accessToken);        
         await sendEvent(req, res);
