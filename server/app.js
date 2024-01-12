@@ -175,9 +175,9 @@ app.get("/auth/callback", (request, response) => {
       refreshToken: conn.refreshToken,
     };
     logger.info(`setting session data from request`, `End`);
-    logger.info(`sending event stream`, `Start`);    
+    logger.info('Before sending event stream');    
     sendEvent(request, response);
-    logger.info(`sending event stream`, `End`);        
+    logger.info('End of sending event stream');
 
     // Redirect to app main page
     return response.redirect("/");
@@ -251,7 +251,7 @@ const writeEvent = (res, sseId, data) => {
 };
 
 const sendEvent = async (req, res) => {
-  // // const session = getSession(req, res);
+  const session = getSession(req, res);
   // // if (session == null) {
   // //   console.log("session is null");
   // //   return;
