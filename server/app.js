@@ -69,12 +69,21 @@ app.use(
 function getSession(request, response) {
   const session = request.session;
   logger.info(`session is ${JSON.stringify(session)}`);
-  logger.info(`session sfdcAuth is ${session.sfdcAuth}`);
+  logger.info(`session sfdcAuth is ${JSON.stringify(session.sfdcAuth)}`);
   if (!session.sfdcAuth) {
     response.status(401).send("No active session");
     return null;
   }
   return session;
+}
+
+function setSession(req, res) {
+  req.session.sfdcAuth = {
+    instanceUrl: conn.instanceUrl,
+    accessToken: conn.accessToken,
+    refreshToken: conn.refreshToken,
+  };
+  return req.session.sfdcAuth
 }
 
 function resumeSalesforceConnection(session) {
@@ -147,7 +156,7 @@ app.get("/auth/logout", (req, res) => {
 /**
  * Login callback endpoint (only called by Salesforce)
  */
-app.get("/auth/callback", (request, response) => {
+app.get("/auth/callback", async (request, response) => {
   if (!request.query.code) {
     response
       .status(500)
@@ -160,7 +169,7 @@ app.get("/auth/callback", (request, response) => {
     oauth2: oauth2,
     version: process.env.apiVersion,
   });
-  conn.authorize(request.query.code, (error, userInfo) => {
+  conn.authorize(request.query.code, async (error, userInfo) => {
     if (error) {
       logger.info("Salesforce authorization error: " + JSON.stringify(error));
       response.status(500).json(error);
@@ -171,11 +180,13 @@ app.get("/auth/callback", (request, response) => {
     logger.info(`refresh token from salesforce: ${conn.refreshToken}`);
     // Store oauth session data in server (never expose it directly to client)
     logger.info(`setting session data from salesforce`, `Start`);
-    request.session.sfdcAuth = {
-      instanceUrl: conn.instanceUrl,
-      accessToken: conn.accessToken,
-      refreshToken: conn.refreshToken,
-    };
+    const sess = await setSession(request, response)
+    logger.info(`Session info ${sJSON.stringify(sess)}`)
+    // request.session.sfdcAuth = {
+    //   instanceUrl: conn.instanceUrl,
+    //   accessToken: conn.accessToken,
+    //   refreshToken: conn.refreshToken,
+    // };
     logger.info(`setting session data from request`, `End`);
     logger.info('Before sending event stream');    
     //sendEvent(request, response);
