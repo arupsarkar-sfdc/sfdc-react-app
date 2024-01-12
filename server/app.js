@@ -227,8 +227,9 @@ app.get("/auth/token", async (req, res) => {
     if (req.headers.accept === "text/event-stream") {
       const conn = resumeSalesforceConnection(session);
       if (conn.accessToken) {
-        //await sendEvent(req, res);
-        console.log("sending token", conn.accessToken);
+        console.log("sending token", conn.accessToken);        
+        await sendEvent(req, res);
+
       }else{
         res.status(401).send("No active session");
         return null;
