@@ -251,24 +251,24 @@ const writeEvent = (res, sseId, data) => {
 };
 
 const sendEvent = async (req, res) => {
-  const session = getSession(req, res);
+  //const session = getSession(req, res);
   // // if (session == null) {
   // //   console.log("session is null");
   // //   return;
   // // }
   // // console.log("session is not null", "requesting token");  
-  const conn = resumeSalesforceConnection(session);
+  //const conn = resumeSalesforceConnection(session);
   // res.writeHead(200, {
   //   "Cache-Control": "no-cache",
   //   "Connection": "keep-alive",
   //   "Content-Type": "text/event-stream",
   // });
   const sseId = new Date().toDateString();
-  if (conn.accessToken) {
+  //if (conn.accessToken) {
     writeEvent(res, sseId, "LoggedIn");
-  } else {
-    writeEvent(res, sseId, "NotLoggedIn");
-  }
+  //} else {
+  //  writeEvent(res, sseId, "NotLoggedIn");
+  //}
 };
 /**
  * Server Side Event: SSE - END
