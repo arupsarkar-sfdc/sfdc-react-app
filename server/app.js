@@ -17,6 +17,20 @@ const pool = new Pool({
     rejectUnauthorized: false
   }
 });
+// define an array to store the access_token and instance_url as values
+const salesforceSession = [];
+//deine a function to store the access_token and instance_url in the salesforceSession array
+const setSalesforceSession = (accessToken, instanceUrl) => {
+// Check if an entry with the same keys already exists
+  // If so, remove it
+  salesforceSession.forEach((element, index) => {
+    if (element.accessToken === accessToken && element.instanceUrl === instanceUrl) {
+      salesforceSession.splice(index, 1);
+    }
+  });
+  // add the new entry
+  salesforceSession.push(accessToken, instanceUrl);
+}
 
 // Load and check config
 require("dotenv").config();
@@ -188,7 +202,9 @@ app.get("/auth/callback", async (request, response) => {
     //   refreshToken: conn.refreshToken,
     // };
     logger.info(`setting session data from request`, `End`);
-    logger.info('Before sending event stream');    
+    logger.info('Before sending event stream'); 
+    // set the salesforcesession in the array function
+    setSalesforceSession(conn.accessToken, conn.instanceUrl);
     //sendEvent(request, response);
     logger.info('End of sending event stream');
 
@@ -239,7 +255,17 @@ app.get("/auth/token", async (req, res) => {
       
     if (req.headers.accept === "text/event-stream") {
       logger.info(`Inside /auth/token - if clause`);
-      const session = await getSession(req, res);
+      //const session = await getSession(req, res);
+      //read the access_token and instance_url from the salesforceSession array
+      const session = salesforceSession[0];
+      //print the salesforceSession array
+      logger.info(`salesforceSession array is ${salesforceSession}`);
+      //print each value of the array
+      salesforceSession.forEach((element, index) => {
+        logger.info(`index ${index} value ${element}`);
+      });
+
+
       logger.info(`session is ${session}`);
       const conn = resumeSalesforceConnection(session);
       logger.info(`conn is ${conn}`);
