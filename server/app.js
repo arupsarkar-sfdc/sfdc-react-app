@@ -275,9 +275,9 @@ app.get("/auth/token", async (req, res) => {
 
 
       logger.info(`session is ${session}`);
-      const conn = resumeSalesforceConnection(session);
-      logger.info(`conn is ${conn}`);
-      if (access_token || conn.accessToken) {
+      //const conn = resumeSalesforceConnection(session);
+      //logger.info(`conn is ${conn}`);
+      if (access_token) {
         console.log("sending token", access_token);        
         await sendEvent(req, res);
 
