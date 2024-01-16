@@ -260,17 +260,25 @@ app.get("/auth/token", async (req, res) => {
       const session = salesforceSession[0];
       //print the salesforceSession array
       logger.info(`salesforceSession array is ${salesforceSession}`);
+      let access_token = '';
+      let instance_url = '';
+
       //print each value of the array
       salesforceSession.forEach((element, index) => {
         logger.info(`index ${index} value ${element}`);
+        if(index == 0) {
+          access_token = element;
+        } else if(index == 1) {
+          instance_url = element;
+        }
       });
 
 
       logger.info(`session is ${session}`);
       const conn = resumeSalesforceConnection(session);
       logger.info(`conn is ${conn}`);
-      if (conn.accessToken) {
-        console.log("sending token", conn.accessToken);        
+      if (access_token || conn.accessToken) {
+        console.log("sending token", access_token);        
         await sendEvent(req, res);
 
       }else{
