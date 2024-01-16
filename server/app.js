@@ -580,9 +580,9 @@ app.get("/api/kafka/events", async (req, res) => {
       //check if the data is a json object & not undefined or null
 
       if(data) {
-        console.log("data from kafka consumer trigger SSE ---> ", data.data);
+        console.log("data from kafka consumer trigger SSE ---> ", data);
         //post to salesforce apex
-        await postToSalesforce(req, res, data.data);
+        await postToSalesforce(req, res, data);
         res.write(`data: ${data}\n\n`);        
       }else {
         console.log(`data is not defined`)
