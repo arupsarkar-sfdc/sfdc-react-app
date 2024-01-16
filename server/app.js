@@ -576,11 +576,13 @@ app.get("/api/kafka/events", async (req, res) => {
     });
     res.flushHeaders();    
 
-    const sendEvent = (data) => {
+    const sendEvent = async (data) => {
       //check if the data is a json object & not undefined or null
 
       if(data) {
-        console.log("data from kafka consumer trigger SSE ---> ", data);
+        console.log("data from kafka consumer trigger SSE ---> ", data.data);
+        //post to salesforce apex
+        await postToSalesforce(data.data);
         res.write(`data: ${data}\n\n`);        
       }else {
         console.log(`data is not defined`)
@@ -596,6 +598,31 @@ app.get("/api/kafka/events", async (req, res) => {
   }
 })
 //kafka orchestration api end points - END
+//create a function with a payload parameter to POST data to a salesforce apex rest resource
+const postToSalesforce = async (payload) => {
+  try{
+    const session = getSession(req, res);
+    if (session == null) {
+      return;
+    }
+    const conn = resumeSalesforceConnection(session);
+    if (conn) {
+      //create platform event
+      if(payload) {
+        const jsonPayload = JSON.parse(payload)
+        conn.apex.post('/flightdetailsevent/', jsonPayload, (err, response) => {
+          if(err) {
+            logger.error(`Error posting to salesforce ${err}`)
+          } else {
+            logger.info(`Data posted to salesforce ${response}`)
+          }
+        })
+      }
+    }
+  }catch(error) {
+    logger.error(`Error posting to salesforce ${error}`)
+  }
+}
 
 app.listen(port, function () {
   logger.info(`App listening on port: ${port}`);
