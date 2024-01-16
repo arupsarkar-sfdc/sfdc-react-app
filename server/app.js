@@ -582,7 +582,7 @@ app.get("/api/kafka/events", async (req, res) => {
       if(data) {
         console.log("data from kafka consumer trigger SSE ---> ", data.data);
         //post to salesforce apex
-        await postToSalesforce(data.data);
+        await postToSalesforce(req, res, data.data);
         res.write(`data: ${data}\n\n`);        
       }else {
         console.log(`data is not defined`)
@@ -599,7 +599,7 @@ app.get("/api/kafka/events", async (req, res) => {
 })
 //kafka orchestration api end points - END
 //create a function with a payload parameter to POST data to a salesforce apex rest resource
-const postToSalesforce = async (payload) => {
+const postToSalesforce = async (req, res, payload) => {
   try{
     const session = getSession(req, res);
     if (session == null) {
