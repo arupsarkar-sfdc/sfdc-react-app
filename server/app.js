@@ -21,13 +21,8 @@ const pool = new Pool({
 const salesforceSession = [];
 //deine a function to store the access_token and instance_url in the salesforceSession array
 const setSalesforceSession = (accessToken, instanceUrl) => {
-// Check if an entry with the same keys already exists
-  // If so, remove it
-  salesforceSession.forEach((element, index) => {
-    if (element.accessToken === accessToken && element.instanceUrl === instanceUrl) {
-      salesforceSession.splice(index, 1);
-    }
-  });
+  //delete all entries in the array
+  salesforceSession.length = 0;
   // add the new entry
   salesforceSession.push(accessToken, instanceUrl);
 }
@@ -89,15 +84,6 @@ function getSession(request, response) {
     return null;
   }
   return session;
-}
-
-function setSession(req, res, conn) {
-  req.session.sfdcAuth = {
-    instanceUrl: conn.instanceUrl,
-    accessToken: conn.accessToken,
-    refreshToken: conn.refreshToken,
-  };
-  return req.session.sfdcAuth
 }
 
 function resumeSalesforceConnection(session) {
@@ -194,19 +180,16 @@ app.get("/auth/callback", async (request, response) => {
     logger.info(`refresh token from salesforce: ${conn.refreshToken}`);
     // Store oauth session data in server (never expose it directly to client)
     logger.info(`setting session data from salesforce`, `Start`);
-    const sess = await setSession(request, response, conn)
-    logger.info(`Session info ${JSON.stringify(sess)}`);
-    // request.session.sfdcAuth = {
-    //   instanceUrl: conn.instanceUrl,
-    //   accessToken: conn.accessToken,
-    //   refreshToken: conn.refreshToken,
-    // };
+    request.session.sfdcAuth = {
+      instanceUrl: conn.instanceUrl,
+      accessToken: conn.accessToken,
+      refreshToken: conn.refreshToken,
+    };
     logger.info(`setting session data from request`, `End`);
-    logger.info('Before sending event stream'); 
+    logger.info('Setting salesforce session in the array function', 'Start'); 
     // set the salesforcesession in the array function
     setSalesforceSession(conn.accessToken, conn.instanceUrl);
-    //sendEvent(request, response);
-    logger.info('End of sending event stream');
+    logger.info('Setting salesforce session in the array function', 'End');
 
     // Redirect to app main page
     return response.redirect("/");
