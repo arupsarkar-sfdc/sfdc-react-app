@@ -21,10 +21,12 @@ const pool = new Pool({
 const salesforceSession = [];
 //deine a function to store the access_token and instance_url in the salesforceSession array
 const setSalesforceSession = (accessToken, instanceUrl) => {
+  logger.info('Inside setSalesforceSession function', 'Start');
   //delete all entries in the array
   salesforceSession.length = 0;
   // add the new entry
   salesforceSession.push(accessToken, instanceUrl);
+  logger.info('Inside setSalesforceSession function', 'End');
 }
 
 // Load and check config
