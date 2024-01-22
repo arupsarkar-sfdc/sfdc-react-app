@@ -205,8 +205,12 @@ app.get("/auth/callback", async (request, response) => {
     };
     logger.info(`setting session data from request`, `End`);
     logger.info('Setting salesforce session in the array function', 'Start'); 
-    // set the salesforcesession in the array function
-    setSalesforceSession(conn.accessToken, conn.instanceUrl);
+    // print the conn and userInfo object
+    logger.info(`conn object ${conn}`);
+    logger.info(`conn object ${JSON.stringify(conn)}`);
+    logger.info(`userInfo object ${userInfo}`);
+    logger.info(`userInfo object ${JSON.stringify(userInfo)}`);
+    setSalesforceSession(conn.accessToken, conn.instanceUrl, userInfo.id);
     logger.info('Setting salesforce session in the array function', 'End');
 
     // Redirect to app main page
