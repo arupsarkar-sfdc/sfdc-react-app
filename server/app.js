@@ -17,6 +17,7 @@ const pool = new Pool({
     rejectUnauthorized: false
   }
 });
+const db = require('./database');
 // define an array to store the access_token and instance_url as values
 const salesforceSession = [];
 //deine a function to store the access_token and instance_url in the salesforceSession array
