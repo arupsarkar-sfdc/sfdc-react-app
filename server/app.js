@@ -23,11 +23,26 @@ const salesforceSession = [];
 //deine a function to store the access_token and instance_url in the salesforceSession array
 const setSalesforceSession = (accessToken, instanceUrl) => {
   logger.info('Inside setSalesforceSession function', 'Start');
-  //delete all entries in the array
-  salesforceSession.length = 0;
-  // add the new entry
-  salesforceSession.push(accessToken, instanceUrl);
-  logger.info('Inside setSalesforceSession function', 'End');
+  db.readData('SELECT * FROM oauth_tokens ORDER BY id ASC', (error, results) => {
+    if (error) {
+        throw error;
+    }
+    logger.info(`results from db ${results.rows}`);
+    logger.info(`results from db ${results.rows[0].access_token}`);
+    logger.info(`results from db ${results.rows[0].instance_url}`);
+    //set the access_token and instance_url in the salesforceSession array
+    salesforceSession.push(results.rows[0].access_token, results.rows[0].instance_url);
+    logger.info(`salesforceSession array is ${salesforceSession}`);
+  })
+  .then((data) => {
+    logger.info(`data from db ${data}`);
+  })
+  .catch((error) => {
+    logger.error(`error from db ${error}`);
+  })
+  .finally(() => {
+    logger.info('Inside setSalesforceSession function', 'End');
+  })
 }
 
 // Load and check config
