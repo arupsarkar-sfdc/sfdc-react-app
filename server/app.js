@@ -21,8 +21,11 @@ const db = require('./database');
 // define an array to store the access_token and instance_url as values
 const salesforceSession = [];
 //deine a function to store the access_token and instance_url in the salesforceSession array
-const setSalesforceSession = (accessToken, instanceUrl) => {
-  logger.info('Inside setSalesforceSession function', 'Start');
+const setSalesforceSession = (accessToken, instanceUrl, userId) => {
+  //print all input params
+  logger.info(`accessToken ${accessToken}`);
+  logger.info(`instanceUrl ${instanceUrl}`);
+  logger.info(`userId ${userId}`);
   db.readData('SELECT * FROM oauth_tokens ORDER BY id ASC', (error, results) => {
     if (error) {
         throw error;
